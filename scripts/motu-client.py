@@ -26,18 +26,11 @@
 #  along with this library; if not, write to the Free Software Foundation,
 #  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-import urllib
-import urllib2
 import traceback
 import platform
 import sys
 import httplib
-import os
-import re
-import tempfile
 import datetime
-import shutil
-import zipfile
 import logging
 import logging.config
 import ConfigParser
@@ -46,42 +39,48 @@ import socket
 
 from pkg_resources import resource_filename
 
-import httplib
 from httplib import HTTPConnection, HTTPS_PORT
 import ssl
+
 
 class HTTPSConnection(HTTPConnection):
     "This class allows communication via SSL."
     default_port = HTTPS_PORT
 
     def __init__(self, host, port=None, key_file=None, cert_file=None,
-            strict=None, timeout=socket._GLOBAL_DEFAULT_TIMEOUT,
-            source_address=None):
+                 strict=None, timeout=socket._GLOBAL_DEFAULT_TIMEOUT,
+                 source_address=None):
         HTTPConnection.__init__(self, host, port, strict, timeout,
-                source_address)
+                                source_address)
         self.key_file = key_file
         self.cert_file = cert_file
 
     def connect(self):
         "Connect to a host on a given (SSL) port."
         sock = socket.create_connection((self.host, self.port),
-                self.timeout, self.source_address)
+                                        self.timeout, self.source_address)
         if self._tunnel_host:
             self.sock = sock
             self._tunnel()
         # this is the only line we modified from the httplib.py file
         # we added the ssl_version variable
-        self.sock = ssl.wrap_socket(sock, self.key_file, self.cert_file, ssl_version=ssl.PROTOCOL_TLSv1)
+        self.sock = ssl.wrap_socket(sock,
+                                    self.key_file,
+                                    self.cert_file,
+                                    ssl_version=ssl.PROTOCOL_TLSv1)
 
-#now we override the one in httplib
+
+# now we override the one in httplib
 httplib.HTTPSConnection = HTTPSConnection
 # ssl_version corrections are done
 
+
 # The necessary required version of Python interpreter
-REQUIRED_VERSION = (2,5)
+REQUIRED_VERSION = (2, 5)
+
 
 # error code to use when exiting after exception catch
-ERROR_CODE_EXIT=1
+ERROR_CODE_EXIT = 1
 
 # the config file to load from
 CFG_FILE = '~/motu-client/motu-client-python.ini'
@@ -96,7 +95,8 @@ log = None
 _variables = []
 
 # Import project libraries
-from motu import utils_log, utils_messages, motu_api
+from motu import utils_log, motu_api
+
 
 def get_client_version():
     """Return the version (as a string) of this client.
@@ -105,6 +105,7 @@ def get_client_version():
     touch it unless you know what you are doing."""
     return '1.0.2'
 
+
 def get_client_artefact():
     """Return the artifact identifier (as a string) of this client.
 
@@ -112,173 +113,197 @@ def get_client_artefact():
     touch it unless you know what you are doing."""
     return 'motu-client-python'
 
+
 def load_options():
     """load options to handle"""
 
-    _options = None
-
     # create option parser
-    parser = optparse.OptionParser(version=get_client_artefact() + ' v' + get_client_version())
+    parser = optparse.OptionParser(version=get_client_artefact() +
+                                   ' v' +
+                                   get_client_version())
 
     # create config parser
     conf_parser = ConfigParser.SafeConfigParser()
     conf_parser.read(resource_filename(__name__, CFG_FILE))
 
     # add available options
-    parser.add_option( '--quiet', '-q',
-                       help = "prevent any output in stdout",
-                       action = 'store_const',
-                       const = logging.WARN,
-                       dest='log_level')
+    parser.add_option('--quiet', '-q',
+                      help="prevent any output in stdout",
+                      action='store_const',
+                      const=logging.WARN,
+                      dest='log_level')
 
-    parser.add_option( '--verbose',
-                       help = "print information in stdout",
-                       action='store_const',
-                       const = logging.DEBUG,
-                       dest='log_level')
+    parser.add_option('--verbose',
+                      help="print information in stdout",
+                      action='store_const',
+                      const=logging.DEBUG,
+                      dest='log_level')
 
-    parser.add_option( '--noisy',
-                       help = "print more information (traces) in stdout",
-                       action='store_const',
-                       const = utils_log.TRACE_LEVEL,
-                       dest='log_level')
+    parser.add_option('--noisy',
+                      help="print more information (traces) in stdout",
+                      action='store_const',
+                      const=utils_log.TRACE_LEVEL,
+                      dest='log_level')
 
-    parser.add_option( '--user', '-u',
-                       help = "the user name (string)")
+    parser.add_option('--user', '-u',
+                      help="the user name (string)")
 
-    parser.add_option( '--pwd', '-p',
-                       help = "the user password (string)")
+    parser.add_option('--pwd', '-p',
+                      help="the user password (string)")
 
-    parser.add_option( '--auth-mode',
-                       default = motu_api.AUTHENTICATION_MODE_CAS,
-                       help = "the authentication mode: '" + motu_api.AUTHENTICATION_MODE_NONE  +
-                              "' (for no authentication), '"+ motu_api.AUTHENTICATION_MODE_BASIC +
-                              "' (for basic authentication), or '"+motu_api.AUTHENTICATION_MODE_CAS +
-                              "' (for Central Authentication Service) [default: %default]")
+    parser.add_option('--auth-mode',
+                      default=motu_api.AUTHENTICATION_MODE_CAS,
+                      help=("the authentication mode: '" +
+                            motu_api.AUTHENTICATION_MODE_NONE +
+                            "' (for no authentication), '" +
+                            motu_api.AUTHENTICATION_MODE_BASIC +
+                            "' (for basic authentication), or '" +
+                            motu_api.AUTHENTICATION_MODE_CAS +
+                            "' (for Central Authentication Service) "
+                            "[default: %default]"))
 
-    parser.add_option( '--proxy-server',
-                       help = "the proxy server (url)")
+    parser.add_option('--proxy-server',
+                      help="the proxy server (url)")
 
-    parser.add_option( '--proxy-user',
-                       help = "the proxy user (string)")
+    parser.add_option('--proxy-user',
+                      help="the proxy user (string)")
 
-    parser.add_option( '--proxy-pwd',
-                       help = "the proxy password (string)")
+    parser.add_option('--proxy-pwd',
+                      help="the proxy password (string)")
 
-    parser.add_option( '--motu', '-m',
-                       help = "the motu server to use (url)")
+    parser.add_option('--motu', '-m',
+                      help="the motu server to use (url)")
 
-    parser.add_option( '--service-id', '-s',
-                       help = "The service identifier (string)")
+    parser.add_option('--service-id', '-s',
+                      help="The service identifier (string)")
 
-    parser.add_option( '--product-id', '-d',
-                       help = "The product (data set) to download (string)")
+    parser.add_option('--product-id', '-d',
+                      help="The product (data set) to download (string)")
 
-    parser.add_option( '--date-min', '-t',
-                       help = "The min date with optional hour resolution (string following format YYYY-MM-DD [HH:MM:SS])")
+    parser.add_option('--date-min', '-t',
+                      help="The min date with optional hour resolution "
+                           "(string following format YYYY-MM-DD [HH:MM:SS])")
 
-    parser.add_option( '--date-max', '-T',
-                       help = "The max date with optional hour resolution (string following format YYYY-MM-DD [HH:MM:SS])",
-                       default = datetime.date.today().isoformat())
+    parser.add_option('--date-max', '-T',
+                      help="The max date with optional hour resolution "
+                           "(string following format YYYY-MM-DD [HH:MM:SS])",
+                      default=datetime.date.today().isoformat())
 
-    parser.add_option( '--latitude-min', '-y',
-                       type = 'float',
-                       help = "The min latitude (float in the interval [-90 ; 90])")
+    parser.add_option('--latitude-min', '-y',
+                      type='float',
+                      help="The min latitude "
+                           "(float in the interval [-90 ; 90])")
 
-    parser.add_option( '--latitude-max', '-Y',
-                       type = 'float',
-                       help = "The max latitude (float in the interval [-90 ; 90])")
+    parser.add_option('--latitude-max', '-Y',
+                      type='float',
+                      help="The max latitude "
+                           "(float in the interval [-90 ; 90])")
 
-    parser.add_option( '--longitude-min', '-x',
-                       type = 'float',
-                       help = "The min longitude (float in the interval [-180 ; 180])")
+    parser.add_option('--longitude-min', '-x',
+                      type='float',
+                      help="The min longitude "
+                           "(float in the interval [-180 ; 180])")
 
-    parser.add_option( '--longitude-max', '-X',
-                       type = 'float',
-                       help = "The max longitude (float in the interval [-180 ; 180])")
+    parser.add_option('--longitude-max', '-X',
+                      type='float',
+                      help="The max longitude "
+                           "(float in the interval [-180 ; 180])")
 
-    parser.add_option( '--depth-min', '-z',
-                       type = 'string',
-                       help = "The min depth (float in the interval [0 ; 2e31] or string 'Surface')")
+    parser.add_option('--depth-min', '-z',
+                      type='string',
+                      help="The min depth (float in the interval [0 ; 2e31] "
+                           "or string 'Surface')")
 
-    parser.add_option( '--depth-max', '-Z',
-                       type = 'string',
-                       help = "The max depth (float in the interval [0 ; 2e31] or string 'Surface')")
+    parser.add_option('--depth-max', '-Z',
+                      type='string',
+                      help="The max depth (float in the interval [0 ; 2e31] "
+                           "or string 'Surface')")
 
-    parser.add_option( '--variable', '-v',
-                       help = "The variable (list of strings)",
-                       callback=option_callback_variable,
-                       dest="variable",
-                       type="string",
-                       action="callback")
+    parser.add_option('--variable', '-v',
+                      help="The variable (list of strings)",
+                      callback=option_callback_variable,
+                      dest="variable",
+                      type="string",
+                      action="callback")
 
-    parser.add_option( '--describe-product', '-D',
-                       help = "Perform a describe product operation instead of download",
-                       action='store_true',
-                       dest='describe')
+    parser.add_option('--describe-product', '-D',
+                      help="Perform a describe product operation instead of "
+                           "download",
+                      action='store_true',
+                      dest='describe')
 
-    parser.add_option( '--out-dir', '-o',
-                       help = "The output dir (string)",
-                       default=".")
+    parser.add_option('--out-dir', '-o',
+                      help="The output dir (string)",
+                      default=".")
 
-    parser.add_option( '--out-name', '-f',
-                       help = "The output file name (string)",
-                       default="data.nc")
+    parser.add_option('--out-name', '-f',
+                      help="The output file name (string)",
+                      default="data.nc")
 
-    parser.add_option( '--block-size',
-                       type = 'int',
-                       help = "The block used to download file (integer expressing bytes)",
-                       default="65536")
+    parser.add_option('--block-size',
+                      type='int',
+                      help="The block used to download file (integer "
+                           "expressing bytes)",
+                      default="65536")
 
-    parser.add_option( '--socket-timeout',
-                       type = 'float',
-                       help = "Set a timeout on blocking socket operations (float expressing seconds)")
-    parser.add_option( '--user-agent',
-                       help = "Set the identification string (user-agent) for HTTP requests. By default this value is 'Python-urllib/x.x' (where x.x is the version of the python interpreter)")
+    parser.add_option('--socket-timeout',
+                      type='float',
+                      help="Set a timeout on blocking socket operations "
+                           "(float expressing seconds)")
+    parser.add_option('--user-agent',
+                      help="Set the identification string (user-agent) for "
+                           "HTTP requests. By default this value is "
+                           "'Python-urllib/x.x' (where x.x is the version of "
+                           "the python interpreter)")
 
     # set default values by picking from the configuration file
     default_values = {}
     default_variables = []
     for option in parser.option_list:
-        if (option.dest != None) and conf_parser.has_option(SECTION, option.dest):
+        if option.dest is not None and conf_parser.has_option(SECTION,
+                                                              option.dest):
             if (option.dest == "variable"):
                 default_variables.append(conf_parser.get(SECTION, option.dest))
                 default_values[option.dest] = default_variables
             else:
-                default_values[option.dest] = conf_parser.get(SECTION, option.dest)
+                default_values[option.dest] = conf_parser.get(SECTION,
+                                                              option.dest)
 
-    parser.set_defaults( **default_values )
+    parser.set_defaults(**default_values)
 
     return parser.parse_args()
+
 
 def option_callback_variable(option, opt, value, parser):
     global _variables
     _variables.append(value)
     setattr(parser.values, option.dest, _variables)
 
+
 def check_version():
-    """Utilitary function that checks the required version of the python interpreter
-    is available. Raise an exception if not."""
+    """Utilitary function that checks the required version of the python
+    interpreter is available. Raise an exception if not."""
 
     global REQUIRED_VERSION
     cur_version = sys.version_info
-    if (cur_version[0] > REQUIRED_VERSION[0] or
-        cur_version[0] == REQUIRED_VERSION[0] and
-        cur_version[1] >= REQUIRED_VERSION[1]):
-       return
+    if ((cur_version[0] > REQUIRED_VERSION[0] or
+         cur_version[0] == REQUIRED_VERSION[0] and
+         cur_version[1] >= REQUIRED_VERSION[1])):
+        return
     else:
-       raise Exception( "This tool uses python 2.5 or greater. You version is %s. " % str(cur_version) )
+        raise Exception("This tool uses python 2.5 or greater. You version "
+                        "is %s. " % str(cur_version))
 
-#===============================================================================
+# ==============================================================================
 # The Main function
-#===============================================================================
+# ==============================================================================
 if __name__ == '__main__':
     check_version()
     start_time = datetime.datetime.now()
 
     # first initialize the logger
     logging.addLevelName(utils_log.TRACE_LEVEL, 'TRACE')
-    logging.config.fileConfig( resource_filename(__name__, LOG_CFG_FILE) )
+    logging.config.fileConfig(resource_filename("motu", LOG_CFG_FILE))
     log = logging.getLogger("motu-client-python")
 
     logging.getLogger().setLevel(logging.INFO)
@@ -287,40 +312,40 @@ if __name__ == '__main__':
         # we prepare options we want
         (_options, args) = load_options()
 
-        if _options.log_level != None:
+        if _options.log_level is not None:
             logging.getLogger().setLevel(int(_options.log_level))
 
         motu_api.execute_request(_options)
     except Exception, e:
-        log.error( "Execution failed: %s", e )
+        log.error("Execution failed: %s", e)
         if hasattr(e, 'reason'):
-          log.info( ' . reason: %s', e.reason )
+            log.info(' . reason: %s', e.reason)
         if hasattr(e, 'code'):
-          log.info( ' . code  %s: ', e.code )
+            log.info(' . code  %s: ', e.code)
         if hasattr(e, 'read'):
-          log.log( utils_log.TRACE_LEVEL, ' . detail:\n%s', e.read() )
+            log.log(utils_log.TRACE_LEVEL, ' . detail:\n%s', e.read())
 
-        log.debug( '-'*60 )
-        log.debug( "Stack trace exception is detailed herafter:" )
+        log.debug('-' * 60)
+        log.debug("Stack trace exception is detailed herafter:")
         exc_type, exc_value, exc_tb = sys.exc_info()
         x = traceback.format_exception(exc_type, exc_value, exc_tb)
         for stack in x:
-            log.debug( ' . %s', stack.replace('\n', '') )
-        log.debug( '-'*60 )
-        log.log( utils_log.TRACE_LEVEL, 'System info is provided hereafter:' )
+            log.debug(' . %s', stack.replace('\n', ''))
+        log.debug('-' * 60)
+        log.log(utils_log.TRACE_LEVEL, 'System info is provided hereafter:')
         system, node, release, version, machine, processor = platform.uname()
-        log.log( utils_log.TRACE_LEVEL, ' . system   : %s', system )
-        log.log( utils_log.TRACE_LEVEL, ' . node     : %s', node )
-        log.log( utils_log.TRACE_LEVEL, ' . release  : %s', release )
-        log.log( utils_log.TRACE_LEVEL, ' . version  : %s', version )
-        log.log( utils_log.TRACE_LEVEL, ' . machine  : %s', machine )
-        log.log( utils_log.TRACE_LEVEL, ' . processor: %s', processor )
-        log.log( utils_log.TRACE_LEVEL, ' . python   : %s', sys.version )
-        log.log( utils_log.TRACE_LEVEL, ' . client   : %s', get_client_version() )
-        log.log( utils_log.TRACE_LEVEL, '-'*60 )
+        log.log(utils_log.TRACE_LEVEL, ' . system   : %s', system)
+        log.log(utils_log.TRACE_LEVEL, ' . node     : %s', node)
+        log.log(utils_log.TRACE_LEVEL, ' . release  : %s', release)
+        log.log(utils_log.TRACE_LEVEL, ' . version  : %s', version)
+        log.log(utils_log.TRACE_LEVEL, ' . machine  : %s', machine)
+        log.log(utils_log.TRACE_LEVEL, ' . processor: %s', processor)
+        log.log(utils_log.TRACE_LEVEL, ' . python   : %s', sys.version)
+        log.log(utils_log.TRACE_LEVEL, ' . client   : %s', get_client_version())
+        log.log(utils_log.TRACE_LEVEL, '-' * 60)
 
         sys.exit(ERROR_CODE_EXIT)
 
     finally:
-        log.debug( "Elapsed time : %s", str(datetime.datetime.now() - start_time) )
-
+        log.debug("Elapsed time : %s",
+                  str(datetime.datetime.now() - start_time))
