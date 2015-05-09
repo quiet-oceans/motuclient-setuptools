@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Python motu client v.${project.version} 
+# Python motu client v.1.0.6 
 #
 # Motu, a high efficient, robust and Standard compliant Web Server for Geographic
 #  Data Dissemination.
@@ -42,7 +42,7 @@ class HTTPErrorProcessor(urllib2.HTTPErrorProcessor):
         return response
 
 
-def open_url(url, **kargs):
+def open_url(url, **kargsParam):
     """open an url and return an handler on it.
        arguments can be :
          headers : http headers to send
@@ -72,17 +72,27 @@ def open_url(url, **kargs):
                 HTTPErrorProcessor()                    
                ]
 
+    # print "AAAAAAAAAAAA kargsParam"               
+    # for key, value in kargsParam.items():
+        # print key, value                
+               
+    kargs = kargsParam.copy();
+    
+    # print "BBBBBBBBBBB kargs"               
+    # for key, value in kargs.items():
+        # print key, value                
+
     # add handlers for managing proxy credentials if necessary        
     if kargs.has_key('proxy'):
-        # extract protocol            
-        #log.log( utils_log.TRACE_LEVEL, ' PROXY. %s',kargs['proxy']['scheme'])
-        #log.log( utils_log.TRACE_LEVEL, ' PORT . %s',kargs['proxy']['netloc'])
-        #handlers.append( urllib2.ProxyHandler({kargs['proxy']['scheme']:kargs['proxy']['netloc']}) )
-        handlers.append( urllib2.ProxyHandler({'http':kargs['proxy']['netloc'], 'https':kargs['proxy']['netloc']}) )
+        urlProxy = ''
         if kargs['proxy'].has_key('user'):
-            proxy_auth_handler = urllib2.HTTPBasicAuthHandler()
-            proxy_auth_handler.add_password('realm', kargs['proxy']['user'], 'username', kargs['proxy']['password'])
-            handlers.append(proxy_auth_handler)
+            urlProxy = kargs['proxy']['user'] + ':' + kargs['proxy']['password'] + '@'
+
+        urlProxy += kargs['proxy']['netloc'] 
+
+        handlers.append( urllib2.ProxyHandler({'http':urlProxy, 'https':urlProxy}) )
+        handlers.append( urllib2.HTTPBasicAuthHandler() )
+        
         del kargs['proxy']
         
     if kargs.has_key('authentication'):
@@ -109,6 +119,10 @@ def open_url(url, **kargs):
     else:
         r = urllib2.Request(url, **kargs)
   
+    # print "CCCCCCC kargs"               
+    # for key, value in kargs.items():
+        # print key, value                
+
     # open the url, but let the exception propagates to the caller  
     return _opener.open(r)
 
