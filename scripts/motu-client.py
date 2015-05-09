@@ -185,12 +185,12 @@ def load_options():
     parser.add_option( '--sync-mode', '-S',
                        help = "Sets the download mode to synchronous (not recommended)",
                        action='store_true',
-					   dest='sync')
+                                           dest='sync')
 
     parser.add_option( '--describe-product', '-D',
                        help = "It allows to have all updated information on a dataset. Output is in XML format",
                        action='store_true',
-					   dest='describe')
+                                           dest='describe')
 
     parser.add_option( '--out-dir', '-o',
                        help = "The output dir (string)",
@@ -240,9 +240,9 @@ def check_version():
     if (cur_version[0] > REQUIRED_VERSION[0] or
         cur_version[0] == REQUIRED_VERSION[0] and
         cur_version[1] >= REQUIRED_VERSION[1]):
-       return
+        return
     else:
-       raise Exception( "This tool uses python 2.7 or greater. You version is %s. " % str(cur_version) )
+        raise Exception( "This tool uses python 2.7 or greater. You version is %s. " % str(cur_version) )
 
 #===============================================================================
 # The Main function
@@ -269,11 +269,11 @@ if __name__ == '__main__':
     except Exception, e:
         log.error( "Execution failed: %s", e )
         if hasattr(e, 'reason'):
-          log.info( ' . reason: %s', e.reason )
+            log.info( ' . reason: %s', e.reason )
         if hasattr(e, 'code'):
-          log.info( ' . code  %s: ', e.code )
+            log.info( ' . code  %s: ', e.code )
         if hasattr(e, 'read'):
-          log.log( utils_log.TRACE_LEVEL, ' . detail:\n%s', e.read() )
+            log.log( utils_log.TRACE_LEVEL, ' . detail:\n%s', e.read() )
 
         log.debug( '-'*60 )
         log.debug( "Stack trace exception is detailed herafter:" )
@@ -298,4 +298,3 @@ if __name__ == '__main__':
 
     finally:
         log.debug( "Elapsed time : %s", str(datetime.datetime.now() - start_time) )
-
