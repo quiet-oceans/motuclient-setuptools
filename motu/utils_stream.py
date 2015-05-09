@@ -3,8 +3,8 @@
 #
 # Python motu client v.1.0.6
 #
-# Motu, a high efficient, robust and Standard compliant Web Server for Geographic
-#  Data Dissemination.
+# Motu, a high efficient, robust and Standard compliant Web Server for
+# Geographic Data Dissemination.
 #
 #  http://cls-motu.sourceforge.net/
 #
@@ -26,17 +26,15 @@
 #  along with this library; if not, write to the Free Software Foundation,
 #  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-import urllib2
-import logging
-import utils_unit
 
-def copy(sourceHandler, destHandler, callback = None, blockSize = 65535 ):
-    """Copy the available content through the given handler to another one. Process
-    can be monitored with the (optional) callback function.
+def copy(sourceHandler, destHandler, callback=None, blockSize=65535):
+    """Copy the available content through the given handler to another one.
+    Process can be monitored with the (optional) callback function.
 
     sourceHandler: the handler through witch downloading content
     destHandler: the handler into which writing data
-    callback: the callback function called for each block read. Signature: f: sizeRead -> void
+    callback: the callback function called for each block read.
+    Signature: f: sizeRead -> void
     blockSize: the size of the block used to read data
 
     returns the total size read
@@ -46,7 +44,7 @@ def copy(sourceHandler, destHandler, callback = None, blockSize = 65535 ):
     while 1:
         block = sourceHandler.read(blockSize)
         if block == "":
-            break;
+            break
         read += len(block)
         destHandler.write(block)
         callback(read)

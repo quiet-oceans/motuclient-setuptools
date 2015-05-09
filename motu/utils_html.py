@@ -3,8 +3,8 @@
 #
 # Python motu client v.1.0.6
 #
-# Motu, a high efficient, robust and Standard compliant Web Server for Geographic
-#  Data Dissemination.
+# Motu, a high efficient, robust and Standard compliant Web Server for
+# Geographic Data Dissemination.
 #
 #  http://cls-motu.sourceforge.net/
 #
@@ -27,6 +27,7 @@
 #  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 import HTMLParser
+
 
 class FounderParser(HTMLParser.HTMLParser):
     """

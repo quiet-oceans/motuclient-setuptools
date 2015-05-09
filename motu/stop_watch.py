@@ -3,8 +3,8 @@
 #
 # Python motu client v.1.0.6
 #
-# Motu, a high efficient, robust and Standard compliant Web Server for Geographic
-#  Data Dissemination.
+# Motu, a high efficient, robust and Standard compliant Web Server for
+# Geographic Data Dissemination.
 #
 #  http://cls-motu.sourceforge.net/
 #
@@ -26,13 +26,14 @@
 #  along with this library; if not, write to the Free Software Foundation,
 #  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-from threading import Thread, local
+from threading import local
 
 import time
 import threading
 
 # global stats
 tsl = local()
+
 
 class StopWatch(object):
     TIME = "time"
@@ -48,14 +49,14 @@ class StopWatch(object):
         self.timers = {}
         self.times = {}
 
-    def start(self,label = GLOBAL):
+    def start(self, label=GLOBAL):
         """Starts a new counter
            Returns the time the counter has been recorded.
         """
         self.timers[label] = self.__time()
         return self.timers[label]
 
-    def stop(self,label=GLOBAL):
+    def stop(self, label=GLOBAL):
         """Stops the clock for the given counter.
         Returns the time at which the instance was stopped.
         """
@@ -67,7 +68,7 @@ class StopWatch(object):
     def isRunning(self, label=GLOBAL):
         return label in self.timers
 
-    def elapsed(self,label=GLOBAL):
+    def elapsed(self, label=GLOBAL):
         """The number of seconds since the current time that the StopWatch
         object was created.  If stop() was called, it is the number
         of seconds from the instance creation until stop() was called.
@@ -89,18 +90,24 @@ class StopWatch(object):
     def __str__(self):
         """Nicely format the elapsed time
         """
-        keys = self.times.keys() + filter( lambda x:x not in self.times.keys(), self.timers.keys() )
+        keys = (self.times.keys() +
+                filter(lambda x: x not in self.times.keys(),
+                       self.timers.keys()))
         txt = ""
         for key in keys:
-            txt = txt + key + " : " + str(self.elapsed(key)) + " s " + ("(running)" if self.isRunning(key) else "(stopped)")+"\n"
+            txt = (txt + key + " : " + str(self.elapsed(key)) + " s " +
+                   ("(running)" if self.isRunning(key)
+                    else "(stopped)") +
+                   "\n")
         return txt
 
+
 def localThreadStopWatch():
-    if not hasattr(tsl,'timer'):
+    if not hasattr(tsl, 'timer'):
         lock = threading.Lock()
         lock.acquire()
         try:
-            if not hasattr(tsl,'timer'):
+            if not hasattr(tsl, 'timer'):
                 tsl.timer = StopWatch()
         finally:
             lock.release()

@@ -3,8 +3,8 @@
 #
 # Python motu client v.1.0.6
 #
-# Motu, a high efficient, robust and Standard compliant Web Server for Geographic
-#  Data Dissemination.
+# Motu, a high efficient, robust and Standard compliant Web Server for
+# Geographic Data Dissemination.
 #
 #  http://cls-motu.sourceforge.net/
 #
@@ -29,16 +29,16 @@
 import logging
 import re
 import urllib
-import datetime
 
-import utils_http
-import utils_messages
-import utils_html
-import utils_log
-import utils_collection
+from motu import utils_http
+from motu import utils_messages
+from motu import utils_html
+from motu import utils_log
+from motu import utils_collection
 
 # pattern used to search for a CAS url within a response
 CAS_URL_PATTERN = '(.*)/login.*'
+
 
 def authenticate_CAS_for_URL(url, user, pwd, **url_config):
     """Performs a CAS authentication for the given URL service and returns
@@ -55,18 +55,21 @@ def authenticate_CAS_for_URL(url, user, pwd, **url_config):
     url: the url of the service to invoke
     user: the username
     pwd: the password"""
-
     log = logging.getLogger("utils_cas:authenticate_CAS_for_URL")
 
-    server, sep, options = url.partition( '?' )
+    server, _, _ = url.partition('?')
 
-    log.info( 'Authenticating user %s for service %s' % (user,server) )
+    log.info('Authenticating user %s for service %s', user, server)
 
-    connexion = utils_http.open_url(url,**url_config)
+    connexion = utils_http.open_url(url, **url_config)
 
-    # connexion response code must be a redirection, else, there's an error (user can't be already connected since no cookie or ticket was sent)
+    # connexion response code must be a redirection, else, there's an error
+    # (user can't be already connected since no cookie or ticket was sent)
     if connexion.url == url:
-        raise Exception(utils_messages.get_external_messages()['motu-client.exception.authentication.not-redirected'] % server )
+        raise Exception(
+            utils_messages.get_external_messages()[
+                'motu-client.exception.authentication.not-redirected'
+            ] % server)
 
     # find the cas url from the redirected url
     redirected_url = connexion.url
@@ -74,45 +77,60 @@ def authenticate_CAS_for_URL(url, user, pwd, **url_config):
     m = re.search(CAS_URL_PATTERN, redirected_url)
 
     if m is None:
-        raise Exception(utils_messages.get_external_messages()['motu-client.exception.authentication.unfound-url'] % redirected_url)
+        raise Exception(
+            utils_messages.get_external_messages()[
+                'motu-client.exception.authentication.unfound-url'
+            ] % redirected_url)
 
     url_cas = m.group(1) + '/v1/tickets'
 
-    opts = utils_http.encode(utils_collection.ListMultimap(username = user, password = pwd))
+    opts = utils_http.encode(utils_collection.ListMultimap(username=user,
+                                                           password=pwd))
 
-    utils_log.log_url( log, "login user into CAS:\t", url_cas+'?'+opts )
-    url_config['data']=opts
+    utils_log.log_url(log, "login user into CAS:\t", url_cas+'?'+opts)
+    url_config['data'] = opts
     connexion = utils_http.open_url(url_cas, **url_config)
 
     fp = utils_html.FounderParser()
     for line in connexion:
-        log.log( utils_log.TRACE_LEVEL, 'utils_html.FounderParser() line: %s', line )
+        log.log(utils_log.TRACE_LEVEL,
+                'utils_html.FounderParser() line: %s',
+                line)
         fp.feed(line)
 
     tgt = fp.action_[fp.action_.rfind('/') + 1:]
-    log.log( utils_log.TRACE_LEVEL, 'TGT: %s', tgt )
+    log.log(utils_log.TRACE_LEVEL,
+            'TGT: %s',
+            tgt)
 
-    # WARNING : don't use 'fp.action_' as url : it seems protocol is always http never https
-    # use 'url_cas', extract TGT from 'fp.action_' , then construct url_ticket.
+    # WARNING : don't use 'fp.action_' as url : it seems protocol is always
+    # http never https use 'url_cas', extract TGT from 'fp.action_' , then
+    # construct url_ticket.
     # url_ticket = fp.action_
     url_ticket = url_cas + '/' + tgt
 
     if url_ticket is None:
-        raise Exception(utils_messages.get_external_messages()['motu-client.exception.authentication.tgt'])
+        raise Exception(
+            utils_messages.get_external_messages()[
+                'motu-client.exception.authentication.tgt'
+            ])
 
-    utils_log.log_url( log, "found url ticket:\t",url_ticket)
+    utils_log.log_url(log, "found url ticket:\t", url_ticket)
 
-    opts = utils_http.encode(utils_collection.ListMultimap(service = urllib.quote_plus(url)))
+    opts = utils_http.encode(
+        utils_collection.ListMultimap(service=urllib.quote_plus(url)))
 
-    utils_log.log_url( log, 'Granting user for service\t', url_ticket +'?'+opts )
-    url_config['data']=opts
+    utils_log.log_url(log,
+                      'Granting user for service\t',
+                      url_ticket + '?' + opts)
+    url_config['data'] = opts
     ticket = utils_http.open_url(url_ticket, **url_config).readline()
 
-    utils_log.log_url( log, "found service ticket:\t", ticket)
+    utils_log.log_url(log, "found service ticket:\t", ticket)
 
     # we append the download url with the ticket and return the result
     service_url = url + '&ticket=' + ticket
 
-    utils_log.log_url( log, "service url is:\t",service_url)
+    utils_log.log_url(log, "service url is:\t", service_url)
 
     return service_url

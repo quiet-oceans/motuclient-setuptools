@@ -15,6 +15,7 @@ Requires Python 2.5.
 import collections
 import sets
 
+
 class Map(object):
     """ Map wraps a dictionary. It is essentially an abstract class from which
     specific multimaps are subclassed. """
@@ -43,12 +44,18 @@ class Map(object):
         del self._dict[key]
 
     def dict(self):
-        """ Allows access to internal dictionary, if necessary. Caution: multimaps
-        will break if keys are not associated with proper container."""
+        """ Allows access to internal dictionary, if necessary.
+
+        Caution: multimaps will break if keys are not associated with proper
+        container.
+        """
         return self._dict
 
+
 class ListMultimap(Map):
-    """ ListMultimap is based on lists and allows multiple instances of same value. """
+    """ ListMultimap is based on lists and allows multiple instances of same
+    value.
+    """
     def __init__(self, **values):
         self._dict = collections.defaultdict(list)
         self.insert(**values)
@@ -59,8 +66,11 @@ class ListMultimap(Map):
     def remove(self, key, value):
         self._dict[key].remove(value)
 
+
 class SetMultimap(Map):
-    """ SetMultimap is based on sets and prevents multiple instances of same value. """
+    """ SetMultimap is based on sets and prevents multiple instances of same
+    value.
+    """
     def __init__(self):
         self._dict = collections.defaultdict(sets.Set)
 
@@ -70,8 +80,10 @@ class SetMultimap(Map):
     def remove(self, key, value):
         self._dict[key].remove(value)
 
+
 class DictMultimap(Map):
-    """ DictMultimap is based on dicts and allows fast tests for membership. """
+    """ DictMultimap is based on dicts and allows fast tests for membership.
+    """
     def __init__(self):
         self._dict = collections.defaultdict(dict)
 
@@ -80,6 +92,7 @@ class DictMultimap(Map):
 
     def remove(self, key, value):
         del self._dict[key][value]
+
 
 def test():
     def test_multimap(m):
@@ -90,7 +103,7 @@ def test():
         m["a"] = 2
         m["a"] = 3
         m["a"] = 4
-        m.insert( b = 'v1', c = 'v2' )
+        m.insert(b='v1', c='v2')
         print m
         m.remove("a", 4)
         print m
