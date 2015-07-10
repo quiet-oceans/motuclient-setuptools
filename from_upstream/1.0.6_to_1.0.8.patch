@@ -1,0 +1,198 @@
+diff -Nr motu-client-python-1.0.6/doc/readme-motu-client.html motu-client-python-1.0.8/doc/readme-motu-client.html
+15c15
+<   ./motu-client.py 
+---
+>   ./motu-client.py
+26c26
+< This documentation is intended to describe the 1.0.6 version or higher of the motu python client.
+---
+> This documentation is intended to describe the 1.0.8 version or higher of the motu python client.
+187c187
+< CLS (Collecte Localisation Satellites) for MyOcean
+---
+> CLS (Collecte Localisation Satellites)
+diff -Nr motu-client-python-1.0.6/doc/readme-motu-client.man motu-client-python-1.0.8/doc/readme-motu-client.man
+18c18
+< This documentation is intended to describe the 1.0.6 version or higher of the motu python client.
+---
+> This documentation is intended to describe the 1.0.8 version or higher of the motu python client.
+174c174
+< CLS (Collecte Localisation Satellites) for MyOcean
+---
+> CLS (Collecte Localisation Satellites)
+diff -Nr motu-client-python-1.0.6/doc/readme-motu-client.txt motu-client-python-1.0.8/doc/readme-motu-client.txt
+23c23
+< This documentation is intended to describe the 1.0.6 version or higher of the motu python client.
+---
+> This documentation is intended to describe the 1.0.8 version or higher of the motu python client.
+172c172
+< CLS (Collecte Localisation Satellites) for MyOcean
+---
+> CLS (Collecte Localisation Satellites)
+diff -Nr motu-client-python-1.0.6/lib/motu_api.py motu-client-python-1.0.8/lib/motu_api.py
+4c4
+< # Python motu client v.1.0.6 
+---
+> # Python motu client v.1.0.8 
+77c77
+<     return '1.0.6'
+---
+>     return '1.0.8'
+543,544c543,545
+< 					dom = minidom.parseString(m.read())
+< 					
+---
+> 					motu_reply=m.read()
+> 					dom = minidom.parseString(motu_reply)
+> 
+558,565c559,566
+< 				if status == "2": log.error('Some sort of error ocurred with the request') 
+< 				if status == "1": log.info('The product is ready for download') 						
+< 				
+< 				if dwurl != "":
+< 					dl_2_file(dwurl, fh, _options.block_size, _options.describe, **url_config)
+< 					log.info( "Done" )
+< 				else:
+< 					log.error("Couldn't retrieve file")
+---
+> 				if status == "2": log.error(dwurl) 
+> 				if status == "1": 
+> 					log.info('The product is ready for download')
+> 					if dwurl != "":
+> 						dl_2_file(dwurl, fh, _options.block_size, _options.describe, **url_config)
+> 						log.info( "Done" )
+> 					else:
+> 						log.error("Couldn't retrieve file")
+Binary files motu-client-python-1.0.6/lib/motu_api.pyc and motu-client-python-1.0.8/lib/motu_api.pyc differ
+diff -Nr motu-client-python-1.0.6/lib/stop_watch.py motu-client-python-1.0.8/lib/stop_watch.py
+4c4
+< # Python motu client v.1.0.6 
+---
+> # Python motu client v.1.0.8 
+Binary files motu-client-python-1.0.6/lib/stop_watch.pyc and motu-client-python-1.0.8/lib/stop_watch.pyc differ
+diff -Nr motu-client-python-1.0.6/lib/utils_cas.py motu-client-python-1.0.8/lib/utils_cas.py
+4c4
+< # Python motu client v.1.0.6 
+---
+> # Python motu client v.1.0.8 
+Binary files motu-client-python-1.0.6/lib/utils_cas.pyc and motu-client-python-1.0.8/lib/utils_cas.pyc differ
+diff -Nr motu-client-python-1.0.6/lib/utils_collection.py motu-client-python-1.0.8/lib/utils_collection.py
+12c12
+< Requires Python 2.5.  
+---
+> Requires Python 2.7.  
+Binary files motu-client-python-1.0.6/lib/utils_collection.pyc and motu-client-python-1.0.8/lib/utils_collection.pyc differ
+diff -Nr motu-client-python-1.0.6/lib/utils_html.py motu-client-python-1.0.8/lib/utils_html.py
+4c4
+< # Python motu client v.1.0.6 
+---
+> # Python motu client v.1.0.8
+Binary files motu-client-python-1.0.6/lib/utils_html.pyc and motu-client-python-1.0.8/lib/utils_html.pyc differ
+diff -Nr motu-client-python-1.0.6/lib/utils_http.py motu-client-python-1.0.8/lib/utils_http.py
+4c4
+< # Python motu client v.1.0.6 
+---
+> # Python motu client v.1.0.8
+34a35,66
+> import ssl
+> import socket
+> 
+> class TLS1Connection(httplib.HTTPSConnection):
+>     """Like HTTPSConnection but more specific"""
+>     def __init__(self, host, **kwargs):
+>         httplib.HTTPSConnection.__init__(self, host, **kwargs)
+>  
+>     def connect(self):
+>         """Overrides HTTPSConnection.connect to specify TLS version"""
+>         # Standard implementation from HTTPSConnection, which is not
+>         # designed for extension, unfortunately
+>         sock = socket.create_connection((self.host, self.port),
+>                 self.timeout, self.source_address)
+>         if getattr(self, '_tunnel_host', None):
+>             self.sock = sock
+>             self._tunnel()
+>  
+>         # This is the only difference; default wrap_socket uses SSLv23
+>         self.sock = ssl.wrap_socket(sock, self.key_file, self.cert_file,
+>                 ssl_version=ssl.PROTOCOL_TLSv1)
+>  
+> class TLS1Handler(urllib2.HTTPSHandler):
+>     """Like HTTPSHandler but more specific"""
+>     def __init__(self):
+>         urllib2.HTTPSHandler.__init__(self)
+>  
+>     def https_open(self, req):
+>         return self.do_open(TLS1Connection, req)
+> 
+> # Overide default handler
+> urllib2.install_opener(urllib2.build_opener(TLS1Handler()))
+70c102
+<                 urllib2.HTTPSHandler(),
+---
+>                 TLS1Handler(),
+100c132
+<         password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
+---
+>         password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm(ssl_version=ssl.PROTOCOL_TLSv1)
+104c136
+<         handlers.append(urllib2.HTTPBasicAuthHandler(password_mgr))
+---
+>         handlers.append(urllib2.TLS1Handler(password_mgr))
+Binary files motu-client-python-1.0.6/lib/utils_http.pyc and motu-client-python-1.0.8/lib/utils_http.pyc differ
+diff -Nr motu-client-python-1.0.6/lib/utils_log.py motu-client-python-1.0.8/lib/utils_log.py
+4c4
+< # Python motu client v.1.0.6 
+---
+> # Python motu client v.1.0.8
+Binary files motu-client-python-1.0.6/lib/utils_log.pyc and motu-client-python-1.0.8/lib/utils_log.pyc differ
+diff -Nr motu-client-python-1.0.6/lib/utils_messages.py motu-client-python-1.0.8/lib/utils_messages.py
+4c4
+< # Python motu client v.1.0.6 
+---
+> # Python motu client v.1.0.8 
+Binary files motu-client-python-1.0.6/lib/utils_messages.pyc and motu-client-python-1.0.8/lib/utils_messages.pyc differ
+diff -Nr motu-client-python-1.0.6/lib/utils_stream.py motu-client-python-1.0.8/lib/utils_stream.py
+4c4
+< # Python motu client v.1.0.6 
+---
+> # Python motu client v.1.0.8 
+Binary files motu-client-python-1.0.6/lib/utils_stream.pyc and motu-client-python-1.0.8/lib/utils_stream.pyc differ
+diff -Nr motu-client-python-1.0.6/lib/utils_unit.py motu-client-python-1.0.8/lib/utils_unit.py
+4c4
+< # Python motu client v.1.0.6 
+---
+> # Python motu client v.1.0.8 
+Binary files motu-client-python-1.0.6/lib/utils_unit.pyc and motu-client-python-1.0.8/lib/utils_unit.pyc differ
+diff -Nr motu-client-python-1.0.6/motu-client.py motu-client-python-1.0.8/motu-client.py
+4c4
+< # Python motu client v.1.0.4-SNAPSHOT 
+---
+> # Python motu client v.1.0.8
+84c84
+<     return '1.0.6'
+---
+>     return '1.0.8'
+diff -Nr motu-client-python-1.0.6/notice.txt motu-client-python-1.0.8/notice.txt
+1c1
+< Motu Client Python - v. 1.0.6
+---
+> Motu Client Python - v. 1.0.8
+25c25,38
+<     * Asynchronous download mode that waits until the files are processed on motu side.
+\ No newline at end of file
+---
+>     * Asynchronous download mode that waits until the files are processed on motu side.
+> 	
+> ===============
+> 1.0.7 - June. 2015
+> ------------------
+>   - New feature :
+>     * Improvement of verbosity/error control with the asynchronous mode.
+> 	
+> ===============
+> 1.0.8 - June. 2015
+> ------------------
+>   - Bug correction :
+>     * Avoid SSL negotiation (TLSv1 fixed as default).
+> 	* Bug affected latest Ubuntu 12.04 and higher.
+\ No newline at end of file
