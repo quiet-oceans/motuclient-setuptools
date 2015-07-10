@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Python motu client v.1.0.6
+# Python motu client v.1.0.8
 #
 # Motu, a high efficient, robust and Standard compliant Web Server for
 # Geographic Data Dissemination.
@@ -29,8 +29,43 @@
 import urllib2
 import cookielib
 import logging
+import ssl
+import socket
 
 from motu import utils_log
+
+
+class TLS1Connection(httplib.HTTPSConnection):
+
+    """ Like HTTPSConnection but more specific. """
+
+    def __init__(self, host, **kwargs):
+        httplib.HTTPSConnection.__init__(self, host, **kwargs)
+
+    def connect(self):
+        """ Overrides HTTPSConnection.connect to specify TLS version. """
+        # Standard implementation from HTTPSConnection, which is not
+        # designed for extension, unfortunately
+        sock = socket.create_connection((self.host, self.port),
+                                        self.timeout, self.source_address)
+        if getattr(self, '_tunnel_host', None):
+            self.sock = sock
+            self._tunnel()
+
+        # This is the only difference; default wrap_socket uses SSLv23
+        self.sock = ssl.wrap_socket(sock, self.key_file, self.cert_file,
+                                    ssl_version=ssl.PROTOCOL_TLSv1)
+
+
+class TLS1Handler(urllib2.HTTPSHandler):
+
+    """ Like HTTPSHandler but more specific. """
+
+    def __init__(self):
+        urllib2.HTTPSHandler.__init__(self)
+
+    def https_open(self, req):
+        return self.do_open(TLS1Connection, req)
 
 
 class HTTPErrorProcessor(urllib2.HTTPErrorProcessor):
@@ -45,6 +80,10 @@ class HTTPErrorProcessor(urllib2.HTTPErrorProcessor):
                                          msg,
                                          hdrs)
         return response
+
+
+# Overide default handler
+urllib2.install_opener(urllib2.build_opener(TLS1Handler()))
 
 
 def open_url(url, **kargsParam):
@@ -72,7 +111,7 @@ def open_url(url, **kargsParam):
     # common handlers
     handlers = [urllib2.HTTPCookieProcessor(cookielib.CookieJar()),
                 urllib2.HTTPHandler(),
-                urllib2.HTTPSHandler(),
+                TLS1Handler(),
                 utils_log.HTTPDebugProcessor(log),
                 HTTPErrorProcessor()]
 
@@ -97,14 +136,16 @@ def open_url(url, **kargsParam):
 
     if 'authentication' in kargs:
         # create the password manager
-        password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
+        password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm(
+            ssl_version=ssl.PROTOCOL_TLSv1
+        )
         urlPart = url.partition('?')
         password_mgr.add_password(None,
                                   urlPart,
                                   kargs['authentication']['user'],
                                   kargs['authentication']['password'])
         # add the basic authentication handler
-        handlers.append(urllib2.HTTPBasicAuthHandler(password_mgr))
+        handlers.append(urllib2.TLS1Handler(password_mgr))
         del kargs['authentication']
 
     if 'data' in kargs:
