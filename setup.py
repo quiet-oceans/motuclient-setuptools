@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="motu-client",
-    version="1.0.6",
+    version="1.0.8",
     url="https://gitlab.com/lsix/motu-client",
     maintainer="Lancelot SIX",
     maintainer_email="lancelot@lancelotsix.com",
