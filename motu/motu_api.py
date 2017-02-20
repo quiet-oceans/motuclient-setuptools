@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Python motu client v.1.0.8
+# Python motu client
 #
 # Motu, a high efficient, robust and Standard compliant Web Server for
 # Geographic Data Dissemination.
@@ -65,7 +65,7 @@ def get_client_version():
     The value is automatically set by the maven processing build, so don't
     touch it unless you know what you are doing.
     """
-    return '1.0.8'
+    return '1.2.0'
 
 
 def get_client_artefact():
@@ -96,12 +96,14 @@ def build_params(_options):
         if _options.sync:
             log.info('Synchronous mode set')
             query_options.insert(action='productdownload',
+                                 scriptVersion=get_client_version(),
                                  mode='console',
                                  service=_options.service_id,
                                  product=_options.product_id)
         else:
             log.info('Asynchronous mode set')
             query_options.insert(action='productdownload',
+                                 scriptVersion=get_client_version(),
                                  mode='status',
                                  service=_options.service_id,
                                  product=_options.product_id)
@@ -306,17 +308,29 @@ def check_options(_options):
                     'motu-client.exception.option.out-of-range'
                 ] % ('latitude_max', str(tempvalue)))
         tempvalue = float(_options.longitude_min)
+        tempvalue = normalize_longitude(tempvalue)
         if tempvalue < -180 or tempvalue > 180:
             raise Exception(
                 utils_messages.get_external_messages()[
                     'motu-client.exception.option.out-of-range'
                 ] % ('logitude_min', str(tempvalue)))
         tempvalue = float(_options.longitude_max)
+        tempvalue = normalize_longitude(tempvalue)
         if tempvalue < -180 or tempvalue > 180:
             raise Exception(
                 utils_messages.get_external_messages()[
                     'motu-client.exception.option.out-of-range'
                 ] % ('longitude_max', str(tempvalue)))
+
+
+def normalize_longitude(lon):
+    if lon > 180:
+        while lon > 180:
+            lon -= 360
+    elif lon < -180:
+        while lon < -180:
+            lon += 360
+    return lon
 
 
 def total_seconds(td):
@@ -376,7 +390,7 @@ def get_requestUrl(dl_url, server, **options):
     return get_req_url
 
 
-def dl_2_file(dl_url, fh, block_size=65535, describe='None', **options):
+def dl_2_file(dl_url, fh, block_size=65535, describe=None, **options):
     """ Download the file with the main url (of Motu) file.
 
     Motu can return an error message in the response stream without setting an
@@ -411,12 +425,13 @@ def dl_2_file(dl_url, fh, block_size=65535, describe='None', **options):
             headers = m.info()
             if "Content-Type" in headers:
                 if len(headers['Content-Type']) > 0:
-                    if ((headers['Content-Type'].startswith('text') or
-                         headers['Content-Type'].find('html') != -1)):
-                        raise Exception(
-                            utils_messages.get_external_messages()[
-                                'motu-client.exception.motu.error'
-                            ] % m.read())
+                    if not describe:
+                        if ((headers['Content-Type'].startswith('text') or
+                             headers['Content-Type'].find('html') != -1)):
+                            raise Exception(
+                                utils_messages.get_external_messages()[
+                                    'motu-client.exception.motu.error'
+                                ] % m.read())
 
                 log.info('File type: %s' % headers['Content-Type'])
             # check if a content length (size of the file) has been send
@@ -464,9 +479,9 @@ def dl_2_file(dl_url, fh, block_size=65535, describe='None', **options):
             stopWatch.stop('downloading')
 
             log.info("Processing  time : %s",
-                     str(processing_time - start_time))
+                     str(processing_time - init_time))
             log.info("Downloading time : %s", str(end_time - processing_time))
-            log.info("Total time       : %s", str(end_time - start_time))
+            log.info("Total time       : %s", str(end_time - init_time))
             log.info("Download rate    : %s/s", utils_unit.convert_bytes(
                 (read / total_milliseconds(end_time - start_time)) * 10**3))
         finally:
@@ -542,7 +557,9 @@ def execute_request(_options):
 
     """
     global log
+    global init_time
 
+    init_time = datetime.datetime.now()
     stopWatch = stop_watch.localThreadStopWatch()
     stopWatch.start()
     try:
@@ -603,7 +620,8 @@ def execute_request(_options):
         try:
             # Synchronous mode
             if _options.sync is True:
-                dl_2_file(download_url, fh, _options.block_size, **url_config)
+                dl_2_file(download_url, fh, _options.block_size,
+                          _options.describe, **url_config)
                 log.info("Done")
             # Asynchronous mode
             else:
@@ -636,7 +654,7 @@ def execute_request(_options):
 
                     for node in dom.getElementsByTagName('statusModeResponse'):
                         status = node.getAttribute('status')
-                        dwurl = node.getAttribute('msg')
+                        dwurl = node.getAttribute('remoteUri')
 
                     # Check status
                     if status == "0" or status == "3":  # in progress/pending
