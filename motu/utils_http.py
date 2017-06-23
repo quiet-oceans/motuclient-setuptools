@@ -69,6 +69,10 @@ class TLS1Handler(urllib2.HTTPSHandler):
         return self.do_open(TLS1Connection, req)
 
 
+# Overide default handler
+urllib2.install_opener(urllib2.build_opener(TLS1Handler()))
+
+
 class HTTPErrorProcessor(urllib2.HTTPErrorProcessor):
     def https_response(self, request, response):
         # Consider error codes that are not 2xx (201 is an acceptable response)
@@ -83,8 +87,21 @@ class HTTPErrorProcessor(urllib2.HTTPErrorProcessor):
         return response
 
 
-# Overide default handler
-urllib2.install_opener(urllib2.build_opener(TLS1Handler()))
+class NoRedirection(urllib2.HTTPErrorProcessor):
+    def http_response(self, request, response):
+        if response.code == 302:
+            return response
+        return response
+
+    https_response = http_response
+
+
+class SmartRedirectHandler(urllib2.HTTPRedirectHandler):
+    def http_error_302(self, req, fp, code, msg, headers):
+        result = urllib2.HTTPRedirectHandler.http_error_302(
+            self, req, fp, code, msg, headers)
+        result.status = code
+        return result
 
 
 def open_url(url, **kargsParam):
@@ -110,13 +127,13 @@ def open_url(url, **kargsParam):
     data = None
     log = logging.getLogger("utils_http:open_url")
     # common handlers
-    handlers = [urllib2.HTTPCookieProcessor(cookielib.CookieJar()),
+    kargs = kargsParam.copy()
+    handlers = [SmartRedirectHandler(),
+                urllib2.HTTPCookieProcessor(cookielib.CookieJar()),
                 urllib2.HTTPHandler(),
                 TLS1Handler(),
                 utils_log.HTTPDebugProcessor(log),
                 HTTPErrorProcessor()]
-
-    kargs = kargsParam.copy()
 
     # add handlers for managing proxy credentials if necessary
     if 'proxy' in kargs:

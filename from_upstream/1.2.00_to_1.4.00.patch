@@ -1,0 +1,1003 @@
+diff --git a/.project b/.project
+index 4e084db..c5d9293 100644
+--- a/.project
++++ b/.project
+@@ -5,7 +5,13 @@
+ 	<projects>
+ 	</projects>
+ 	<buildSpec>
++		<buildCommand>
++			<name>org.python.pydev.PyDevBuilder</name>
++			<arguments>
++			</arguments>
++		</buildCommand>
+ 	</buildSpec>
+ 	<natures>
++		<nature>org.python.pydev.pythonNature</nature>
+ 	</natures>
+ </projectDescription>
+diff --git a/.pydevproject b/.pydevproject
+new file mode 100644
+index 0000000..9a31ca6
+--- /dev/null
++++ b/.pydevproject
+@@ -0,0 +1,5 @@
++<?xml version="1.0" encoding="UTF-8" standalone="no"?>
++<?eclipse-pydev version="1.0"?><pydev_project>
++<pydev_property name="org.python.pydev.PYTHON_PROJECT_INTERPRETER">Default</pydev_property>
++<pydev_property name="org.python.pydev.PYTHON_PROJECT_VERSION">python 2.7</pydev_property>
++</pydev_project>
+diff --git a/.settings/org.eclipse.core.resources.prefs b/.settings/org.eclipse.core.resources.prefs
+new file mode 100644
+index 0000000..333827f
+--- /dev/null
++++ b/.settings/org.eclipse.core.resources.prefs
+@@ -0,0 +1,8 @@
++eclipse.preferences.version=1
++encoding//src/python/lib/motu_api.py=utf-8
++encoding//src/python/lib/stop_watch.py=utf-8
++encoding//src/python/lib/utils_cas.py=utf-8
++encoding//src/python/lib/utils_http.py=utf-8
++encoding//src/python/lib/utils_log.py=utf-8
++encoding//src/python/lib/utils_stream.py=utf-8
++encoding//src/python/motu-client.py=utf-8
+diff --git a/Motu-client-python - CONSOLE - DESCRIBE PRODUCT - CAS SSO QT.launch b/Motu-client-python - CONSOLE - DESCRIBE PRODUCT - CAS SSO QT.launch
+new file mode 100644
+index 0000000..bef2f9f
+--- /dev/null
++++ b/Motu-client-python - CONSOLE - DESCRIBE PRODUCT - CAS SSO QT.launch	
+@@ -0,0 +1,15 @@
++<?xml version="1.0" encoding="UTF-8" standalone="no"?>
++<launchConfiguration type="org.python.pydev.debug.regularLaunchConfigurationType">
++<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
++<listEntry value="/motu-client-python/src/python/motu-client.py"/>
++</listAttribute>
++<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
++<listEntry value="1"/>
++</listAttribute>
++<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:motu-client-python/src/python/motu-client.py}"/>
++<stringAttribute key="org.eclipse.ui.externaltools.ATTR_OTHER_WORKING_DIRECTORY" value=""/>
++<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--quiet --describe-product --console-mode -u ${MOTU_USER} -p ${MOTU_PASSWORD} -m https://motu-archive-datastore.cls.fr/motu-web/Motu -s Mercator_Ocean_Model_Global-TDS -d dataset-mercator-psy4v3-gl12-bestestimate-uv"/>
++<stringAttribute key="org.python.pydev.debug.ATTR_INTERPRETER" value="__default"/>
++<stringAttribute key="org.python.pydev.debug.ATTR_PROJECT" value="motu-client-python"/>
++<stringAttribute key="process_factory_id" value="org.python.pydev.debug.processfactory.PyProcessFactory"/>
++</launchConfiguration>
+diff --git a/Motu-client-python - CONSOLE - DOWNLOAD - CAS SSO QT.launch b/Motu-client-python - CONSOLE - DOWNLOAD - CAS SSO QT.launch
+new file mode 100644
+index 0000000..ab32a9b
+--- /dev/null
++++ b/Motu-client-python - CONSOLE - DOWNLOAD - CAS SSO QT.launch	
+@@ -0,0 +1,15 @@
++<?xml version="1.0" encoding="UTF-8" standalone="no"?>
++<launchConfiguration type="org.python.pydev.debug.regularLaunchConfigurationType">
++<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
++<listEntry value="/motu-client-python/src/python/motu-client.py"/>
++</listAttribute>
++<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
++<listEntry value="1"/>
++</listAttribute>
++<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:motu-client-python/src/python/motu-client.py}"/>
++<stringAttribute key="org.eclipse.ui.externaltools.ATTR_OTHER_WORKING_DIRECTORY" value=""/>
++<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--quiet --auth-mode=cas -u ${MOTU_USER} -p ${MOTU_PASSWORD}  -m http://misgw-ddo-qt2.cls.fr:9085/motu-web/Motu -s HR_MOD_NCSS-TDS -d HR_MOD -z 0.49 -Z 0.50 -x -70 -X 25 -y -75 -Y 10 -t &quot;2016-06-10&quot; -T &quot;2016-06-11&quot; -v salinity -o console${MOTU_HOME}/motu-client-python -f test.nc"/>
++<stringAttribute key="org.python.pydev.debug.ATTR_INTERPRETER" value="__default"/>
++<stringAttribute key="org.python.pydev.debug.ATTR_PROJECT" value="motu-client-python"/>
++<stringAttribute key="process_factory_id" value="org.python.pydev.debug.processfactory.PyProcessFactory"/>
++</launchConfiguration>
+diff --git a/Motu-client-python - CONSOLE - GET SIZE - CAS SSO QT.launch b/Motu-client-python - CONSOLE - GET SIZE - CAS SSO QT.launch
+new file mode 100644
+index 0000000..26e1132
+--- /dev/null
++++ b/Motu-client-python - CONSOLE - GET SIZE - CAS SSO QT.launch	
+@@ -0,0 +1,15 @@
++<?xml version="1.0" encoding="UTF-8" standalone="no"?>
++<launchConfiguration type="org.python.pydev.debug.regularLaunchConfigurationType">
++<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
++<listEntry value="/motu-client-python/src/python/motu-client.py"/>
++</listAttribute>
++<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
++<listEntry value="1"/>
++</listAttribute>
++<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:motu-client-python/src/python/motu-client.py}"/>
++<stringAttribute key="org.eclipse.ui.externaltools.ATTR_OTHER_WORKING_DIRECTORY" value=""/>
++<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--quiet --auth-mode=cas --size --console-mode -u ${MOTU_USER} -p ${MOTU_PASSWORD}  -m http://misgw-ddo-qt2.cls.fr:9085/motu-web/Motu -s HR_MOD_NCSS-TDS -d HR_MOD -z 0.49 -Z 0.50 -x -70 -X 25 -y -75 -Y 10 -t &quot;2016-06-10&quot; -T &quot;2016-06-11&quot; -v salinity"/>
++<stringAttribute key="org.python.pydev.debug.ATTR_INTERPRETER" value="__default"/>
++<stringAttribute key="org.python.pydev.debug.ATTR_PROJECT" value="motu-client-python"/>
++<stringAttribute key="process_factory_id" value="org.python.pydev.debug.processfactory.PyProcessFactory"/>
++</launchConfiguration>
+diff --git a/Motu-client-python - DOWNLOAD - No CAS SSO.launch b/Motu-client-python - DOWNLOAD - No CAS SSO.launch
+new file mode 100644
+index 0000000..9b4c978
+--- /dev/null
++++ b/Motu-client-python - DOWNLOAD - No CAS SSO.launch	
+@@ -0,0 +1,15 @@
++<?xml version="1.0" encoding="UTF-8" standalone="no"?>
++<launchConfiguration type="org.python.pydev.debug.regularLaunchConfigurationType">
++<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
++<listEntry value="/motu-client-python/src/python/motu-client.py"/>
++</listAttribute>
++<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
++<listEntry value="1"/>
++</listAttribute>
++<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:motu-client-python/src/python/motu-client.py}"/>
++<stringAttribute key="org.eclipse.ui.externaltools.ATTR_OTHER_WORKING_DIRECTORY" value=""/>
++<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--verbose --auth-mode=none -m http://localhost:8080/motu-web/Motu -s HR_MOD_NCSS-TDS -d HR_MOD -z 0.49 -Z 0.50 -x -70 -X 25 -y -75 -Y 10 -t &quot;2016-06-10&quot; -T &quot;2016-06-11&quot; -v salinity -o ${MOTU_HOME}/motu-client-python -f test.nc"/>
++<stringAttribute key="org.python.pydev.debug.ATTR_INTERPRETER" value="__default"/>
++<stringAttribute key="org.python.pydev.debug.ATTR_PROJECT" value="motu-client-python"/>
++<stringAttribute key="process_factory_id" value="org.python.pydev.debug.processfactory.PyProcessFactory"/>
++</launchConfiguration>
+diff --git a/Motu-client-python - HELP.launch b/Motu-client-python - HELP.launch
+new file mode 100644
+index 0000000..5f24ebe
+--- /dev/null
++++ b/Motu-client-python - HELP.launch	
+@@ -0,0 +1,15 @@
++<?xml version="1.0" encoding="UTF-8" standalone="no"?>
++<launchConfiguration type="org.python.pydev.debug.regularLaunchConfigurationType">
++<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
++<listEntry value="/motu-client-python/src/python/motu-client.py"/>
++</listAttribute>
++<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
++<listEntry value="1"/>
++</listAttribute>
++<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:motu-client-python/src/python/motu-client.py}"/>
++<stringAttribute key="org.eclipse.ui.externaltools.ATTR_OTHER_WORKING_DIRECTORY" value=""/>
++<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="-h"/>
++<stringAttribute key="org.python.pydev.debug.ATTR_INTERPRETER" value="Python27"/>
++<stringAttribute key="org.python.pydev.debug.ATTR_PROJECT" value="motu-client-python"/>
++<stringAttribute key="process_factory_id" value="org.python.pydev.debug.processfactory.PyProcessFactory"/>
++</launchConfiguration>
+diff --git a/README.md b/README.md
+index 2fd1f4f..aa9d467 100644
+--- a/README.md
++++ b/README.md
+@@ -19,16 +19,26 @@ and also plugin for [notepadd++](https://github.com/Edditoria/markdown_npp_zenbu
+ * [Installation](#Installation)
+ * [Configuration](#Configuration)
+ * [Usage and options](#Usage)
++* [Usage examples](#UsageExamples)
++    * [Download](#UsageExamplesDownload)
++    * [GetSize](#UsageExamplesGetSize)	
++    * [DescribeProduct](#UsageExamplesDescribeProduct)
+ * [Licence](#Licence)
+ 
+ 
+ #<a name="Overview">Overview</a>
+-Motu client "motu-client-python" is a python script used to connect to Motu HTTP server.  
+-This program can be integrated into a processing chain in order to automate the downloading of products via the Motu.
++Motu client "motu-client-python" is a python script used to connect to Motu HTTP server in order to:  
++
++* __extract__ the data of a dataset, with geospatial, temporal and variable criterias (default option)   
++* __get the size__ of an extraction with geospatial, temporal and variable criterias  
++* __get information__ about a dataset  
++
++This program can be integrated into a processing chain in order to automate the downloading of products via the Motu.  
+   
+   
+ #<a name="Build">Build</a>  
+-From the root folder runs the Maven command:
++From the root folder runs the Maven command:  
++  
+ ```
+ mvn clean install -Dmaven.test.skip=true
+ [...]
+@@ -51,14 +61,16 @@ Deploy the archive in the directory of your choice.
+ ```  
+ tar xvzf motu-client-python-$version-$buildTimestamp-bin.tar.gz
+ ```  
+-Create a [configuration file](#Configuration) to inform the user and password to use to connect to the CAS server.   
++
++Create a [configuration file](#Configuration) and set the user and password to use to connect to the CAS server.   
+ 
+ 
+ #<a name="Configuration">Configuration</a>  
+-The program parameters are contained in an ini file. This file is located in the following directory:  
++All parameters can be defined as command line options or can be written in a configuration file.
++The configuration file is a .ini file. This file is located in the following directory:  
+ 
+ * on __Unix__ platforms: $HOME/motu-client/motu-client-python.ini
+-* on __Windows__ platforms: %USERPROFILE%\motu-client/motu-client-python.ini
++* on __Windows__ platforms: %USERPROFILE%\motu-client\motu-client-python.ini
+   
+ The expected structure of file is:  
+ ``` 
+@@ -97,42 +109,102 @@ motu-client.py [options]
+ 
+ __Options:__  
+ 
+-* __--version__             show program's version number and exit  
++
+ * __-h, --help__            show this help message and exit  
+-* __-q, --quiet__           prevent any output in stdout  
+-* __--verbose__             print information in stdout  
+-* __--noisy__               print more information (traces) in stdout  
+-* __-u USER, --user=USER__  the user name (string)  
+-* __-p PWD, --pwd=PWD__     the user password (string)  
++* __-q, --quiet__           print logs with level WARN in stdout, used to prevent any output in stdout  
++* __--noisy__               print logs with level TRACE in stdout  
++* __--verbose__             print logs with level DEBUG in stdout  
++* __--version__             show program's version number and exit  
++
++* __--proxy-server=PROXY_SERVER__ Proxy server (url) used to contact Motu 
++* __--proxy-user=PROXY_USER__ Proxy user name (string)
++* __--proxy-pwd=PROXY_PWD__ Proxy password (string)  
++
+ * __--auth-mode=AUTH_MODE__  the authentication mode: [default: cas]  
+   * __none__ for no authentication
+   * __basic__ for basic authentication
+   * __cas__ for Central Authentication Service  
+-* __--proxy-server=PROXY_SERVER__ the proxy server (url)  
+-* __--proxy-user=PROXY_USER__ the proxy user (string)  
+-* __--proxy-pwd=PROXY_PWD__ the proxy password (string)  
+-* __-m MOTU, --motu=MOTU__  the motu server to use (url)  
+-* __-s SERVICE_ID, --service-id=SERVICE_ID__ The service identifier (string)  
+-* __-d PRODUCT_ID, --product-id=PRODUCT_ID__ The product (data set) to download (string)  
+-* __-t DATE_MIN, --date-min=DATE_MIN__ The min date with optional hour resolution (string following format YYYY-MM-DD [HH:MM:SS])  
+-* __-T DATE_MAX, --date-max=DATE_MAX__ The max date with optional hour resolution (string following format YYYY-MM-DD  [HH:MM:SS ])  
+-* __-y LATITUDE_MIN, --latitude-min=LATITUDE_MIN__ The min latitude (float in the interval  [-90 ; 90 ])  
+-* __-Y LATITUDE_MAX, --latitude-max=LATITUDE_MAX__ The max latitude (float in the interval  [-90 ; 90 ])  
+-* __-x LONGITUDE_MIN, --longitude-min=LONGITUDE_MIN__ The min longitude (float in the interval [-180 ; 180 ])  
+-* __-X LONGITUDE_MAX, --longitude-max=LONGITUDE_MAX__ The max longitude (float in the interval  [-180 ; 180 ])  
+-* __-z DEPTH_MIN, --depth-min=DEPTH_MIN__ The min depth (float in the interval  [0 ; 2e31 ] or string 'Surface')  
+-* __-Z DEPTH_MAX, --depth-max=DEPTH_MAX__ The max depth (float in the interval  [0 ; 2e31 ] or string 'Surface')  
+-* __-v VARIABLE, --variable=VARIABLE__ The variable (list of strings)  
+-* __-S, --sync-mode__ Sets the download mode to synchronous (not recommended)  
+-* __-D, --describe-product__ It allows to have all updated information on a dataset. Output is in XML format  
+-* __-o OUT_DIR, --out-dir=OUT_DIR__ The output dir (string)  
++* __-u USER, --user=USER__  User name (string) for the specified authentication mode
++* __-p PWD, --pwd=PWD__ the user password (string) for the specified authentication mode. Special characters can be used.  
++  * __Example 1__ From a Windows batch, if your password contains a percent character, double the percent character: If password is CMS2017@%! then enter -u username-p CMS2017@%%! 
++  * __Example 2__ From a Windows batch, if your password contains a space character, set password between double quotes: If password is CMS2017 @%! then enter -u username-p "CMS2017 @%%!"
++  * __Example 3__ From a Linux shell, if your password contains a space character, set password between simple quotes: If password is CMS2017 @%! then enter -u username-p 'CMS2017 @%!'
++
++* __-m MOTU, --motu=MOTU__ Motu server url, e.g. "-m http://localhost:8080/motu-web/Motu"  
++* __-s SERVICE_ID, --service-id=SERVICE_ID__ The service identifier (string), e.g. -s Mercator_Ocean_Model_Global-TDS  
++* __-d PRODUCT_ID, --product-id=PRODUCT_ID__ The product (data set) to download (string), e.g. -d dataset-mercator-psy4v3-gl12-bestestimate-uv  
++* __-t DATE_MIN, --date-min=DATE_MIN__ The min date with optional hour resolution (string following format YYYY-MM-DD [HH:MM:SS]), e.g. -t "2016-06-10"    
++* __-T DATE_MAX, --date-max=DATE_MAX__ The max date with optional hour resolution (string following format YYYY-MM-DD  [HH:MM:SS ]), e.g. -T "2016-06-11"  
++* __-y LATITUDE_MIN, --latitude-min=LATITUDE_MIN__ The min latitude (float in the interval  [-90 ; 90 ]), e.g. -y -80.5  
++* __-Y LATITUDE_MAX, --latitude-max=LATITUDE_MAX__ The max latitude (float in the interval  [-90 ; 90 ]), e.g. -Y 80.5   
++* __-x LONGITUDE_MIN, --longitude-min=LONGITUDE_MIN__ The min longitude (float in the interval [-180 ; 180 ]), e.g. -x -180      
++* __-X LONGITUDE_MAX, --longitude-max=LONGITUDE_MAX__ The max longitude (float in the interval  [-180 ; 180 ]), e.g. -X 35.5      
++* __-z DEPTH_MIN, --depth-min=DEPTH_MIN__ The min depth (float in the interval  [0 ; 2e31 ] or string 'Surface'), e.g. -z 0.49  
++* __-Z DEPTH_MAX, --depth-max=DEPTH_MAX__ The max depth (float in the interval  [0 ; 2e31 ] or string 'Surface'), e.g. -Z 0.50
++* __-v VARIABLE, --variable=VARIABLE__ The variable (list of strings), e.g. -v salinity -v sst  
++* __-S, --sync-mode__ Sets the download mode to synchronous (not recommended). If this parameter is set, Motu server is called with parameter [console](https://github.com/clstoulouse/motu#download-product). Otherwise
++, Motu server is called with parameter [status](https://github.com/clstoulouse/motu#download-product).   
++
++
++* __-o OUT_DIR, --out-dir=OUT_DIR__ The output dir where result (download file) is written (string). If it starts with "console", behaviour is the same as with --console-mode.       
+ * __-f OUT_NAME, --out-name=OUT_NAME__ The output file name (string)  
++* __--console-mode__ Write result on stdout. In case of an extraction, write the nc file http URL where extraction result can be downloaded. In case of a getSize or a describeProduct request, display the XML result.
++
++* __-D, --describe-product__ Get all updated information on a dataset. Output is in XML format, [API details](https://github.com/clstoulouse/motu#describe-product)  
++* __--size__ Get the size of an extraction. Output is in XML format, [API details](https://github.com/clstoulouse/motu#get-size)
++
+ * __--block-size=BLOCK_SIZE__ The block used to download file (integer expressing bytes)  
+ * __--socket-timeout=SOCKET_TIMEOUT__ Set a timeout on blocking socket operations (float expressing seconds)  
+ * __--user-agent=USER_AGENT__ Set the identification string (user-agent) for HTTP requests. By default this value is 'Python-urllib/x.x' (where x.x is the version of the python interpreter)  
+   
+-  
+-  
++#<a name="UsageExamples">Usage examples</a>   
++In the following examples, variable ${MOTU\_USER} and ${MOTU\_PASSWORD} are user name and user password used to connect to the CAS server for single sign on.  
++${MOTU\_SERVER\_URL} is the URL on the MOTU HTTP(s) server. For example http://localhost:8080/motu-web/Motu.
++
++##<a name="UsageExamplesDownload">Download</a>  
++### Download and save extracted file on the local machine
++This command writes the extraction result data in file: /data/test.nc  
++
++```  
++./motu-client.py --verbose --auth-mode=none -m ${MOTU_SERVER_URL} -s HR_MOD_NCSS-TDS -d HR_MOD -z 0.49 -Z 0.50 -x -70 -X 25 -y -75 -Y 10 -t "2016-06-10" -T "2016-06-11" -v salinity -o /data -f test.nc
++``` 
++
++### Display on stdout the HTTP(s) URL of the NC file available on the Motu server
++The HTTP(s) URL is displayed on stdout. This URL is a direct link to the file which is available to be downloaded.  
++
++```  
++./motu-client.py --quiet --auth-mode=cas -u ${MOTU_USER} -p ${MOTU_PASSWORD}  -m ${MOTU_SERVER_URL} -s HR_MOD_NCSS-TDS -d HR_MOD -z 0.49 -Z 0.50 -x -70 -X 25 -y -75 -Y 10 -t "2016-06-10" -T "2016-06-11" -v salinity -o console
++``` 
++
++##<a name="UsageExamplesGetSize">GetSize</a>  
++See [https://github.com/clstoulouse/motu#ClientAPI_GetSize](https://github.com/clstoulouse/motu#ClientAPI_GetSize) for more details about XML result.  
++
++### Download and save the XML file which contains the size on the local machine
++```  
++./motu-client.py --size --auth-mode=cas -u ${MOTU_USER} -p ${MOTU_PASSWORD}  -m ${MOTU_SERVER_URL} -s HR_MOD_NCSS-TDS -d HR_MOD -z 0.49 -Z 0.50 -x -70 -X 25 -y -75 -Y 10 -t "2016-06-10" -T "2016-06-11" -v salinity -o /data -f size.xml
++``` 
++
++### Display the size XML result on stdout
++```  
++./motu-client.py --quiet --size --auth-mode=cas -u ${MOTU_USER} -p ${MOTU_PASSWORD}  -m ${MOTU_SERVER_URL} -s HR_MOD_NCSS-TDS -d HR_MOD -z 0.49 -Z 0.50 -x -70 -X 25 -y -75 -Y 10 -t "2016-06-10" -T "2016-06-11" -v salinity -o console
++``` 
++
++
++##<a name="UsageExamplesDescribeProduct">DescribeProduct</a>  
++See [https://github.com/clstoulouse/motu#describe-product](https://github.com/clstoulouse/motu#describe-product) for more details about XML result.  
++
++### Download and save the XML file which contains the size on the local machine
++```  
++./motu-client.py -D --auth-mode=cas -u ${MOTU_USER} -p ${MOTU_PASSWORD}  -m ${MOTU_SERVER_URL} -s HR_MOD_NCSS-TDS -d HR_MOD -z 0.49 -Z 0.50 -x -70 -X 25 -y -75 -Y 10 -t "2016-06-10" -T "2016-06-11" -v salinity -o /data -f size.xml
++``` 
++
++### Display the size XML result on stdout
++```  
++./motu-client.py --quiet -D --auth-mode=cas -u ${MOTU_USER} -p ${MOTU_PASSWORD}  -m ${MOTU_SERVER_URL} -s HR_MOD_NCSS-TDS -d HR_MOD -z 0.49 -Z 0.50 -x -70 -X 25 -y -75 -Y 10 -t "2016-06-10" -T "2016-06-11" -v salinity -o console
++``` 
++
++
++
+ 
+ #<a name="Licence">Licence</a> 
+ This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.  
+diff --git a/pom.xml b/pom.xml
+index 8e274b1..ef32ea8 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -7,7 +7,7 @@
+ 	<modelVersion>4.0.0</modelVersion>
+     <groupId>cls.atoll.motu.client</groupId>
+     <artifactId>motu-client-python</artifactId>
+-    <version>1.2.00</version>
++    <version>1.4.00</version>
+     <packaging>pom</packaging>
+ 
+     <name>Motu Client Python</name>
+diff --git a/src/python/lib/motu_api.py b/src/python/lib/motu_api.py
+index 38915f5..8a539e4 100644
+--- a/src/python/lib/motu_api.py
++++ b/src/python/lib/motu_api.py
+@@ -27,6 +27,7 @@
+ #  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+ 
+ import urlparse # WARNING : The urlparse module is renamed to urllib.parse
++import urllib
+ import os
+ import re
+ import datetime
+@@ -83,34 +84,37 @@ def build_params(_options):
+     """
+     query_options = utils_collection.ListMultimap()
+     
+-	# describeProduct in XML format (sync) / productDownload (sync/async)
++    # describeProduct in XML format (sync) / productDownload (sync/async)
+     if _options.describe:
+-		_options.sync = True
+-		log.info('Synchronous mode set')		
+-		query_options.insert( action  = 'describeProduct',				
+-							  service = _options.service_id,
+-							  product = _options.product_id 
+-							)   
+-    else:						
+-		# synchronous/asynchronous mode
+-		if _options.sync:
+-			log.info('Synchronous mode set')
+-			query_options.insert( action  = 'productdownload',
+-								  scriptVersion = get_client_version(),
+-								  mode = 'console',
+-								  service = _options.service_id,
+-								  product = _options.product_id 
+-								)						
+-		else:
+-			log.info('Asynchronous mode set')
+-			query_options.insert( action  = 'productdownload',
+-								  scriptVersion = get_client_version(),
+-								  mode    = 'status',
+-								  service = _options.service_id,
+-								  product = _options.product_id 
+-								)
+-	
+-	# geographical parameters
++        query_options.insert( action  = 'describeProduct',                
++                              service = _options.service_id,
++                              product = _options.product_id 
++                            )   
++    elif _options.size:   
++        query_options.insert( action  = 'getSize',                
++                              service = _options.service_id,
++                              product = _options.product_id 
++                            )        
++    else:                        
++        # synchronous/asynchronous mode
++        if _options.sync:
++            log.info('Synchronous mode set')
++            query_options.insert( action  = 'productdownload',
++                                  scriptVersion = urllib.quote_plus(get_client_version()),
++                                  mode = 'console',
++                                  service = _options.service_id,
++                                  product = _options.product_id 
++                                )                        
++        else:
++            log.info('Asynchronous mode set')
++            query_options.insert( action  = 'productdownload',
++                                  scriptVersion = urllib.quote_plus(get_client_version()),
++                                  mode    = 'status',
++                                  service = _options.service_id,
++                                  product = _options.product_id 
++                                )
++    
++    # geographical parameters
+     if _options.extraction_geographic:
+         query_options.insert( x_lo = _options.longitude_min,
+                               x_hi = _options.longitude_max,
+@@ -122,6 +126,11 @@ def build_params(_options):
+         query_options.insert( z_lo = _options.depth_min,
+                               z_hi = _options.depth_max
+                             )
++        
++    if _options.extraction_output:
++        query_options.insert(output=_options.outputWritten)
++    else:
++        query_options.insert(output="netcdf")
+     
+     if _options.extraction_temporal:
+         # date are strings, and they are send to Motu "as is". If not, we convert them into string
+@@ -142,6 +151,10 @@ def build_params(_options):
+         for i, opt in enumerate(variable):
+             query_options.insert( variable = opt )
+     
++    
++    if _options.console_mode or _options.out_dir.startswith("console") :
++        query_options.insert(mode="console")
++        
+     return utils_http.encode(query_options)
+ 
+ def check_options(_options):    
+@@ -182,16 +195,16 @@ def check_options(_options):
+         raise Exception(utils_messages.get_external_messages()['motu-client.exception.option.mandatory'] % 'out-dir')
+     
+     out_dir = _options.out_dir
++    if not out_dir.startswith("console"):
++        # check directory existence
++        if not os.path.exists(out_dir):
++            raise Exception(utils_messages.get_external_messages()['motu-client.exception.option.outdir-notexist'] % out_dir)
++        # check whether directory is writable or not
++        if not os.access(out_dir, os.W_OK):
++            raise Exception(utils_messages.get_external_messages()['motu-client.exception.option.outdir-notwritable'] % out_dir)
+     
+-    # check directory existence
+-    if not os.path.exists(out_dir):
+-        raise Exception(utils_messages.get_external_messages()['motu-client.exception.option.outdir-notexist'] % out_dir)
+-    # check whether directory is writable or not
+-    if not os.access(out_dir, os.W_OK):
+-        raise Exception(utils_messages.get_external_messages()['motu-client.exception.option.outdir-notwritable'] % out_dir)
+-    
+-    if _options.out_name == None :
+-        raise Exception(utils_messages.get_external_messages()['motu-client.exception.option.mandatory'] % 'out-name')
++        if _options.out_name == None :
++            raise Exception(utils_messages.get_external_messages()['motu-client.exception.option.mandatory'] % 'out-name')
+ 
+     # Check PROXY Options
+     _options.proxy = False
+@@ -219,6 +232,10 @@ def check_options(_options):
+     if _options.date_min != None or _options.date_max != None :
+          _options.extraction_temporal = True
+     
++    #Check OUTPUT Options
++    _options.extraction_output = False
++    if _options.outputWritten != None :
++        _options.extraction_output = True
+     
+     # Check GEOGRAPHIC Options
+     _options.extraction_geographic = False
+@@ -285,7 +302,7 @@ def get_url_config(_options, data = None):
+                                     'password': _options.pwd }
+     # headers
+     kargs['headers'] = {"X-Client-Id"     : get_client_artefact(),
+-                        "X-Client-Version": get_client_version()}            
++                        "X-Client-Version": urllib.quote_plus(get_client_version())}            
+     # data
+     if data != None:
+         kargs['data'] = data
+@@ -294,13 +311,12 @@ def get_url_config(_options, data = None):
+ 
+ def get_requestUrl(dl_url, server, **options):
+     """ Get the request url."""    
+-    
+     stopWatch = stop_watch.localThreadStopWatch()    
+     start_time = datetime.datetime.now()
+     stopWatch.start('get_request')
+     log.info( "Requesting file to download (this can take a while)..." ) 
+-	
+-	# Get request id    	
++    
++    # Get request id        
+     m = utils_http.open_url(dl_url, **options)
+     responseStr = m.read()
+     dom = minidom.parseString(responseStr)
+@@ -318,14 +334,13 @@ def get_requestUrl(dl_url, server, **options):
+     stopWatch.stop('get_request')
+     
+     return get_req_url
+-	
+-def wait_till_finished(reqUrlCAS, **options):	
+-
++    
++def wait_till_finished(reqUrlCAS, **options):    
+     stopWatch = stop_watch.localThreadStopWatch()    
+     start_time = datetime.datetime.now()
+ 
+-	
+-def dl_2_file(dl_url, fh, block_size = 65535, describe = None, **options):
++    
++def dl_2_file(dl_url, fh, block_size = 65535, isADownloadRequest = None, **options):
+     """ Download the file with the main url (of Motu) file.
+      
+     Motu can return an error message in the response stream without setting an
+@@ -337,77 +352,94 @@ def dl_2_file(dl_url, fh, block_size = 65535, describe = None, **options):
+     
+     stopWatch = stop_watch.localThreadStopWatch()    
+     start_time = datetime.datetime.now()
+-    log.info( "Downloading file (this can take a while)..." )    
++    log.info("Downloading file (this can take a while)..." )    
+ 
+-	# download file
+-    temp = open(fh, 'w+b')             
++    # download file
++    temp = None
++    if not fh.startswith("console"):
++        temp = open(fh, 'w+b')
++        
+     try:
+-      stopWatch.start('processing')
+-      m = utils_http.open_url(dl_url, **options)
+-      try:
+-        # check the real url (after potential redirection) is not a CAS Url scheme
+-        match = re.search(utils_cas.CAS_URL_PATTERN, m.url)
+-        if match is not None:
+-            service, _, _ = dl_url.partition('?')
+-            redirection, _, _ = m.url.partition('?')
+-            raise Exception(utils_messages.get_external_messages()['motu-client.exception.authentication.redirected'] % (service, redirection) )
+-
+-        # check that content type is not text/plain
+-        headers = m.info()
+-        if "Content-Type" in headers:
+-          if len(headers['Content-Type']) > 0:
+-            if not describe:
+-              if   headers['Content-Type'].startswith('text') or headers['Content-Type'].find('html') != -1:
+-                raise Exception( utils_messages.get_external_messages()['motu-client.exception.motu.error'] % m.read() )
+-          
+-          log.info( 'File type: %s' % headers['Content-Type'] )
+-        # check if a content length (size of the file) has been send
+-        if "Content-Length" in headers:        
+-            try:
+-                # it should be an integer
+-                size = int(headers["Content-Length"]) 
+-                log.info( 'File size: %s (%i B)' % ( utils_unit.convert_bytes(size), size )  )    
+-            except Exception, e:
+-                size = -1
+-                log.warn( 'File size is not an integer: %s' % headers["Content-Length"] )                      
+-        else:
+-          size = -1
+-          log.warn( 'File size: %s' % 'unknown' )
+-
+-        processing_time = datetime.datetime.now();        
+-        stopWatch.stop('processing')        
+-        stopWatch.start('downloading')
++        stopWatch.start('processing')
+         
+-        # performs the download           
+-        log.info( 'Downloading file %s' % os.path.abspath(fh) )
++        m = utils_http.open_url(dl_url, **options)
++        try:
++            # check the real url (after potential redirection) is not a CAS Url scheme
++            match = re.search(utils_cas.CAS_URL_PATTERN, m.url)
++            if match is not None:
++                service, _, _ = dl_url.partition('?')
++                redirection, _, _ = m.url.partition('?')
++                raise Exception(utils_messages.get_external_messages()['motu-client.exception.authentication.redirected'] % (service, redirection) )
++
++            # check that content type is not text/plain
++            headers = m.info()
++            if "Content-Type" in headers:
++              if len(headers['Content-Type']) > 0:
++                if isADownloadRequest:
++                  if headers['Content-Type'].startswith('text') or headers['Content-Type'].find('html') != -1:
++                    raise Exception( utils_messages.get_external_messages()['motu-client.exception.motu.error'] % m.read() )
++              
++            log.info( 'File type: %s' % headers['Content-Type'] )
++            # check if a content length (size of the file) has been send
++            size = -1
++            if "Content-Length" in headers:        
++                try:
++                    # it should be an integer
++                    size = int(headers["Content-Length"]) 
++                    log.info( 'File size: %s (%i B)' % ( utils_unit.convert_bytes(size), size )  )    
++                except Exception, e:
++                    size = -1
++                    log.warn( 'File size is not an integer: %s' % headers["Content-Length"] )                      
++            elif temp is not None:
++                log.warn( 'File size: %s' % 'unknown' )
++
++            processing_time = datetime.datetime.now();        
++            stopWatch.stop('processing')        
++            stopWatch.start('downloading')
+         
+-        def progress_function(sizeRead):
+-           percent = sizeRead*100./size
+-           log.info( "- %s (%.1f%%)", utils_unit.convert_bytes(size).rjust(8), percent )
+-           td = datetime.datetime.now()- start_time;           
++            # performs the download           
++            log.info( 'Downloading file %s' % os.path.abspath(fh) )
+         
+-	def none_function(sizeRead):
+-           percent = 100
+-           log.info( "- %s (%.1f%%)", utils_unit.convert_bytes(size).rjust(8), percent )
+-           td = datetime.datetime.now()- start_time;           
+-
+-	read = utils_stream.copy(m,temp,progress_function if size != -1 else none_function, block_size )
++            def progress_function(sizeRead):
++                percent = sizeRead*100./size
++                log.info( "- %s (%.1f%%)", utils_unit.convert_bytes(size).rjust(8), percent )
++                td = datetime.datetime.now()- start_time;           
+         
+-        end_time = datetime.datetime.now()
+-        stopWatch.stop('downloading')
++            def none_function(sizeRead):
++                percent = 100
++                log.info( "- %s (%.1f%%)", utils_unit.convert_bytes(size).rjust(8), percent)
++                td = datetime.datetime.now()- start_time;           
++            
++            if temp is not None:
++                read = utils_stream.copy(m,temp,progress_function if size != -1 else none_function, block_size )
++            else:
++                if isADownloadRequest:
++                    #Console mode, only display the NC file URL on stdout
++                    read = len(m.url)
++                    print (m.url)
++                else:
++                    import cStringIO
++                    output = cStringIO.StringIO()
++                    utils_stream.copy(m,output,progress_function if size != -1 else none_function, block_size )
++                    read = len(output.getvalue())
++                    print (output.getvalue())
++                
++            end_time = datetime.datetime.now()
++            stopWatch.stop('downloading')
+         
+-        log.info( "Processing  time : %s", str(processing_time - init_time) )
+-        log.info( "Downloading time : %s", str(end_time - processing_time) )
+-        log.info( "Total time       : %s", str(end_time - init_time) )
+-        log.info( "Download rate    : %s/s", utils_unit.convert_bytes((read / total_milliseconds(end_time - start_time)) * 10**3) )
+-      finally:
+-        m.close()
++            log.info( "Processing  time : %s", str(processing_time - init_time) )
++            log.info( "Downloading time : %s", str(end_time - processing_time) )
++            log.info( "Total time       : %s", str(end_time - init_time) )
++            log.info( "Download rate    : %s/s", utils_unit.convert_bytes((read / total_milliseconds(end_time - start_time)) * 10**3) )
++        finally:
++            m.close()
+     finally:
+-      temp.flush()
+-      temp.close()
++        if temp is not None:
++            temp.flush()
++            temp.close()
+ 
+     # raise exception if actual size does not match content-length header
+-    if size >= 0 and read < size:
++    if temp is not None and size >= 0 and read < size:
+         raise Exception(utils_messages.get_external_messages()['motu-client.exception.download.too-short'] % (read, size) )
+ 
+ def execute_request(_options):
+@@ -501,8 +533,8 @@ def execute_request(_options):
+             questionMark = ''
+         url = url_service+questionMark+url_params
+ 
+-        if _options.describe == True: 
+-	    _options.out_name = _options.out_name.replace('.nc','.xml')
++        if _options.describe == True or _options.size == True: 
++            _options.out_name = _options.out_name.replace('.nc','.xml')
+ 
+         # set-up the socket timeout if any
+         if _options.socket_timeout != None:
+@@ -515,6 +547,7 @@ def execute_request(_options):
+             download_url = utils_cas.authenticate_CAS_for_URL(url,
+                                                              _options.user,
+                                                              _options.pwd,**url_config)
++            url_service =  download_url.split("?")[0]
+             stopWatch.stop('authentication')
+         else:
+             # if none, we do nothing more, in basic, we let the url requester doing the job
+@@ -522,65 +555,68 @@ def execute_request(_options):
+ 
+         # create a file for storing downloaded stream
+         fh = os.path.join(_options.out_dir,_options.out_name)
+-		
++        if _options.console_mode:
++            fh = "console"
++            
+         try:
+-			# Synchronous mode
+-			if _options.sync == True:
+-				dl_2_file(download_url, fh, _options.block_size, _options.describe, **url_config)
+-				log.info( "Done" )			
+-			# Asynchronous mode
+-			else:
+-				stopWatch.start('wait_request')
+-				requestUrl = get_requestUrl(download_url, url_service, **url_config)			
+-				
+-				if requestUrl != None:
+-					# asynchronous mode
+-					status = 0
+-					dwurl = ""
+-					msg = ""
+-				
+-					while True:	
+-						if _options.auth_mode == AUTHENTICATION_MODE_CAS:
+-							stopWatch.start('authentication')
+-							# perform authentication before acceding service
+-							requestUrlCas = utils_cas.authenticate_CAS_for_URL(requestUrl,
+-																			 _options.user,
+-																			 _options.pwd,**url_config)
+-							stopWatch.stop('authentication')
+-						else:
+-							# if none, we do nothing more, in basic, we let the url requester doing the job
+-							requestUrlCas = requestUrl	
+-						
+-						m = utils_http.open_url(requestUrlCas, **url_config)				
+-						motu_reply=m.read()
+-						dom = minidom.parseString(motu_reply)
+-	
+-						for node in dom.getElementsByTagName('statusModeResponse'):
+-							status = node.getAttribute('status')	
+-							dwurl = node.getAttribute('remoteUri')
+-							msg = node.getAttribute('msg')
+-							
+-						# Check status
+-						if status == "0" or status == "3": # in progress/pending
+-							log.info('Product is not yet available (request in process)') 		
+-							time.sleep(10)
+-						else: # finished (error|success)
+-							break
+-					
+-					
+-	
+-					if status == "2": 
+-					    log.error(msg) 
+-					if status == "1": 
+-						log.info('The product is ready for download')
+-						if dwurl != "":
+-							dl_2_file(dwurl, fh, _options.block_size, _options.describe, **url_config)
+-							log.info( "Done" )
+-						else:
+-							log.error("Couldn't retrieve file")
+-					
+-				stopWatch.stop('wait_request')		
+-							
++            # Synchronous mode
++            if _options.sync == True or _options.describe == True or _options.size == True:
++                is_a_download_request=False
++                if _options.describe == False and _options.size == False:
++                    is_a_download_request=True
++                dl_2_file(download_url, fh, _options.block_size, is_a_download_request, **url_config)
++                log.info( "Done" )
++            # Asynchronous mode
++            else:
++                stopWatch.start('wait_request')
++                requestUrl = get_requestUrl(download_url, url_service, **url_config)    
++                
++                if requestUrl != None:    
++                    # asynchronous mode
++                    status = 0
++                    dwurl = ""
++                    msg = ""
++                
++                    while True:    
++                        if _options.auth_mode == AUTHENTICATION_MODE_CAS:
++                            stopWatch.start('authentication')
++                            # perform authentication before acceding service
++                            requestUrlCas = utils_cas.authenticate_CAS_for_URL(requestUrl,
++                                                                             _options.user,
++                                                                             _options.pwd,**url_config)
++                            stopWatch.stop('authentication')
++                        else:
++                            # if none, we do nothing more, in basic, we let the url requester doing the job
++                            requestUrlCas = requestUrl    
++                        
++                        m = utils_http.open_url(requestUrlCas, **url_config)                
++                        motu_reply=m.read()
++                        dom = minidom.parseString(motu_reply)
++    
++                        for node in dom.getElementsByTagName('statusModeResponse'):
++                            status = node.getAttribute('status')    
++                            dwurl = node.getAttribute('remoteUri')
++                            msg = node.getAttribute('msg')
++                            
++                        # Check status
++                        if status == "0" or status == "3": # in progress/pending
++                            log.info('Product is not yet available (request in process)')         
++                            time.sleep(10)
++                        else: # finished (error|success)
++                            break
++    
++                    if status == "2": 
++                        log.error(msg) 
++                    if status == "1": 
++                        log.info('The product is ready for download')
++                        if dwurl != "":
++                            dl_2_file(dwurl, fh, _options.block_size, not (_options.describe or _options.size), **url_config)
++                            log.info( "Done" )
++                        else:
++                            log.error("Couldn't retrieve file")
++                    
++                stopWatch.stop('wait_request')        
++                            
+         except:
+             try:
+                 if (os.path.isfile(fh)):
+diff --git a/src/python/lib/utils_cas.py b/src/python/lib/utils_cas.py
+index e4ef6fb..e9710c6 100644
+--- a/src/python/lib/utils_cas.py
++++ b/src/python/lib/utils_cas.py
+@@ -37,6 +37,8 @@ import utils_html
+ import utils_log
+ import utils_collection
+ 
++from urlparse import parse_qs, urlparse
++    
+ # pattern used to search for a CAS url within a response
+ CAS_URL_PATTERN = '(.*)/login.*'
+ 
+@@ -70,6 +72,9 @@ def authenticate_CAS_for_URL(url, user, pwd, **url_config):
+     
+     # find the cas url from the redirected url
+     redirected_url = connexion.url
++    p = parse_qs(urlparse(connexion.url).query, keep_blank_values=False)
++    redirectServiceUrl = p['service'][0]
++    
+     
+     m = re.search(CAS_URL_PATTERN, redirected_url)
+     
+@@ -78,7 +83,7 @@ def authenticate_CAS_for_URL(url, user, pwd, **url_config):
+     
+     url_cas = m.group(1) + '/v1/tickets'
+ 
+-    opts = utils_http.encode(utils_collection.ListMultimap(username = user, password = pwd))
++    opts = utils_http.encode(utils_collection.ListMultimap(username = urllib.quote(user), password = urllib.quote(pwd))) 
+ 
+     utils_log.log_url( log, "login user into CAS:\t", url_cas+'?'+opts )
+     url_config['data']=opts
+@@ -102,7 +107,7 @@ def authenticate_CAS_for_URL(url, user, pwd, **url_config):
+     
+     utils_log.log_url( log, "found url ticket:\t",url_ticket)
+ 
+-    opts = utils_http.encode(utils_collection.ListMultimap(service = urllib.quote_plus(url)))
++    opts = utils_http.encode(utils_collection.ListMultimap(service = urllib.quote_plus(redirectServiceUrl)))
+     
+     utils_log.log_url( log, 'Granting user for service\t', url_ticket +'?'+opts )    
+     url_config['data']=opts
+@@ -110,8 +115,8 @@ def authenticate_CAS_for_URL(url, user, pwd, **url_config):
+     
+     utils_log.log_url( log, "found service ticket:\t", ticket)
+     
+-    # we append the download url with the ticket and return the result
+-    service_url = url + '&ticket=' + ticket
++    # we append the download url with the ticket and return the result  
++    service_url = redirectServiceUrl + '&ticket=' + ticket
+     
+     utils_log.log_url( log, "service url is:\t",service_url)
+       
+diff --git a/src/python/lib/utils_http.py b/src/python/lib/utils_http.py
+index ed05176..da14aaf 100644
+--- a/src/python/lib/utils_http.py
++++ b/src/python/lib/utils_http.py
+@@ -73,7 +73,27 @@ class HTTPErrorProcessor(urllib2.HTTPErrorProcessor):
+             response = self.parent.error('http', request, response, code, msg, hdrs)
+         return response
+ 
++class NoRedirection(urllib2.HTTPErrorProcessor):
+ 
++    # deg __init__(self, )
++    def http_response(self, request, response):
++        if response.code == 302: 
++            return response
++        
++        return response
++
++    https_response = http_response
++    
++
++class SmartRedirectHandler(urllib2.HTTPRedirectHandler):
++
++    def http_error_302(self, req, fp, code, msg, headers):
++        result = urllib2.HTTPRedirectHandler.http_error_302(
++            self, req, fp, code, msg, headers)              
++        result.status = code                                
++        return result
++    
++    
+ def open_url(url, **kargsParam):
+     """open an url and return an handler on it.
+        arguments can be :
+@@ -96,24 +116,16 @@ def open_url(url, **kargsParam):
+     """   
+     data = None
+     log = logging.getLogger("utils_http:open_url")
++    kargs = kargsParam.copy();
+     # common handlers
+-    handlers = [urllib2.HTTPCookieProcessor(cookielib.CookieJar()),
++    handlers = [SmartRedirectHandler(),
++                urllib2.HTTPCookieProcessor(cookielib.CookieJar()),
+                 urllib2.HTTPHandler(),
+                 TLS1Handler(),
+                 utils_log.HTTPDebugProcessor(log),
+                 HTTPErrorProcessor()                    
+                ]
+ 
+-    # print "AAAAAAAAAAAA kargsParam"               
+-    # for key, value in kargsParam.items():
+-        # print key, value                
+-               
+-    kargs = kargsParam.copy();
+-    
+-    # print "BBBBBBBBBBB kargs"               
+-    # for key, value in kargs.items():
+-        # print key, value                
+-
+     # add handlers for managing proxy credentials if necessary        
+     if kargs.has_key('proxy'):
+         urlProxy = ''
+@@ -150,10 +162,6 @@ def open_url(url, **kargsParam):
+         r = urllib2.Request(url, data, **kargs)
+     else:
+         r = urllib2.Request(url, **kargs)
+-  
+-    # print "CCCCCCC kargs"               
+-    # for key, value in kargs.items():
+-        # print key, value                
+ 
+     # open the url, but let the exception propagates to the caller  
+     return _opener.open(r)
+diff --git a/src/python/motu-client.py b/src/python/motu-client.py
+index 4ae855e..a49a87e 100644
+--- a/src/python/motu-client.py
++++ b/src/python/motu-client.py
+@@ -196,12 +196,17 @@ def load_options():
+ 					   dest='sync')
+ 					   
+     parser.add_option( '--describe-product', '-D',
+-                       help = "It allows to have all updated information on a dataset. Output is in XML format",
++                       help = "Get all updated information on a dataset. Output is in XML format",
+                        action='store_true',
+-					   dest='describe')					   
+-
++					   dest='describe')		
++    			   
++    parser.add_option( '--size', 
++                       help = "Get the size of an extraction. Output is in XML format",
++                       action='store_true',
++                       dest='size')        
++    
+     parser.add_option( '--out-dir', '-o',
+-                       help = "The output dir (string)",
++                       help = "The output dir where result (download file) is written (string). If it starts with 'console', behaviour is the same as with --console-mode. ",
+                        default=".")
+                
+     parser.add_option( '--out-name', '-f',
+@@ -217,14 +222,23 @@ def load_options():
+                        type = 'float',
+                        help = "Set a timeout on blocking socket operations (float expressing seconds)")                                          
+     parser.add_option( '--user-agent',
+-                       help = "Set the identification string (user-agent) for HTTP requests. By default this value is 'Python-urllib/x.x' (where x.x is the version of the python interpreter)")                       
+-                  
++                       help = "Set the identification string (user-agent) for HTTP requests. By default this value is 'Python-urllib/x.x' (where x.x is the version of the python interpreter)")
++                                              
++    parser.add_option( '--outputWritten',
++                       help = "Optional parameter used to set the format of the file returned by the download request: netcdf or netcdf4. If not set, netcdf is used.")                      
++    
++    parser.add_option( '--console-mode',
++                       help = "Optional parameter used to display result on stdout, either URL path to download extraction file, or the XML content of getSize or describeProduct requests.",
++                       action='store_true',
++                       dest='console_mode')                      
++    
++    
+     # set default values by picking from the configuration file
+     default_values = {}
+     default_variables = []
+     for option in parser.option_list:        
+         if (option.dest != None) and conf_parser.has_option(SECTION, option.dest):
+-            if (option.dest == "variable"):
++            if option.dest == "variable":
+                 default_variables.append(conf_parser.get(SECTION, option.dest))
+                 default_values[option.dest] = default_variables
+             else:    
