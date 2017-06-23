@@ -7,5 +7,5 @@ This package is a fork of [http://sourceforge.net/projects/cls-motu/files/client
 # Installation
 
 ```bash
-$ pip install https://github.com/quiet-oceans/motuclient-setuptools/archive/motu-client-1.0.8.tar.gz
+$ pip install https://github.com/quiet-oceans/motuclient-setuptools/archive/motu-client-1.4.00.tar.gz
 ```

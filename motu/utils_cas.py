@@ -36,6 +36,8 @@ from motu import utils_html
 from motu import utils_log
 from motu import utils_collection
 
+from urlparse import parse_qs, urlparse
+
 # pattern used to search for a CAS url within a response
 CAS_URL_PATTERN = '(.*)/login.*'
 
@@ -73,6 +75,8 @@ def authenticate_CAS_for_URL(url, user, pwd, **url_config):
 
     # find the cas url from the redirected url
     redirected_url = connexion.url
+    p = parse_qs(urlparse(connexion.url).query, keep_blank_values=False)
+    redirectServiceUrl = p['service'][0]
 
     m = re.search(CAS_URL_PATTERN, redirected_url)
 
@@ -84,8 +88,9 @@ def authenticate_CAS_for_URL(url, user, pwd, **url_config):
 
     url_cas = m.group(1) + '/v1/tickets'
 
-    opts = utils_http.encode(utils_collection.ListMultimap(username=user,
-                                                           password=pwd))
+    opts = utils_http.encode(utils_collection.ListMultimap(
+        username=urllib.quote(user),
+        password=urllib.quote(pwd)))
 
     utils_log.log_url(log, "login user into CAS:\t", url_cas+'?'+opts)
     url_config['data'] = opts
@@ -118,7 +123,8 @@ def authenticate_CAS_for_URL(url, user, pwd, **url_config):
     utils_log.log_url(log, "found url ticket:\t", url_ticket)
 
     opts = utils_http.encode(
-        utils_collection.ListMultimap(service=urllib.quote_plus(url)))
+        utils_collection.ListMultimap(
+            service=urllib.quote_plus(redirectServiceUrl)))
 
     utils_log.log_url(log,
                       'Granting user for service\t',
@@ -129,7 +135,7 @@ def authenticate_CAS_for_URL(url, user, pwd, **url_config):
     utils_log.log_url(log, "found service ticket:\t", ticket)
 
     # we append the download url with the ticket and return the result
-    service_url = url + '&ticket=' + ticket
+    service_url = redirectServiceUrl + '&ticket=' + ticket
 
     utils_log.log_url(log, "service url is:\t", service_url)
 
