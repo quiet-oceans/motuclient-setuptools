@@ -196,13 +196,21 @@ def load_options():
                       dest='sync')
 
     parser.add_option('--describe-product', '-D',
-                      help="It allows to have all updated information on a "
-                      "dataset. Output is in XML format",
+                      help="Get all updated information on a dataset. "
+                      "Output is in XML format",
                       action='store_true',
                       dest='describe')
 
+    parser.add_option('--size',
+                      help = "Get the size of an extraction. Output is in XML "
+                      "format",
+                      action='store_true',
+                      dest='size')
+
     parser.add_option('--out-dir', '-o',
-                      help="The output dir (string)",
+                      help="The output dir where result (download file) is "
+                      "written (string). If it starts with 'console', "
+                      "behaviour is the same as with --console-mode.",
                       default=".")
 
     parser.add_option('--out-name', '-f',
@@ -225,6 +233,19 @@ def load_options():
                       "HTTP requests. By default this value is "
                       "'Python-urllib/x.x' (where x.x is the version of the "
                       "python interpreter)")
+
+    parser.add_option('--outputWritten',
+                      help="Optional parameter used to set the format of the "
+                      "file returned by the download request: netcdf or "
+                      "netcdf4. If not set, netcdf is used.")
+
+    parser.add_option('--console-mode',
+                      help="Optional parameter used to display result on "
+                      "stdout, either URL path to download extraction file, "
+                      "or the XML content of getSize or describeProduct "
+                      "requests.",
+                      action='store_true',
+                      dest='console_mode')
 
     # set default values by picking from the configuration file
     default_values = {}
