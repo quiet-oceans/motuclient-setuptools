@@ -66,7 +66,7 @@ def get_client_version():
     The value is automatically set by the maven processing build, so don't
     touch it unless you know what you are doing.
     """
-    return '1.4.00'
+    return '1.5.00'
 
 
 def get_client_artefact():
@@ -389,7 +389,7 @@ def get_url_config(_options, data=None):
     return kargs
 
 
-def get_requestUrl(dl_url, server, **options):
+def get_requestUrl(dl_url, server, _options, **options):
     """ Get the request url."""
     stopWatch = stop_watch.localThreadStopWatch()
     stopWatch.start('get_request')
@@ -404,7 +404,9 @@ def get_requestUrl(dl_url, server, **options):
         requestId = node.getAttribute('requestId')
 
         # Get request url
-    get_req_url = server + '?action=getreqstatus&requestid=' + requestId
+    get_req_url = (server + '?action=getreqstatus&requestid=' + requestId +
+                   "&service=" + _options.service_id + "&product=" +
+                   _options.product_id)
     stopWatch.stop('get_request')
 
     return get_req_url
@@ -448,15 +450,14 @@ def dl_2_file(dl_url, fh, block_size=65535, isADownloadRequest=None,
 
             # check that content type is not text/plain
             headers = m.info()
-            if "Content-Type" in headers:
-                if len(headers['Content-Type']) > 0:
-                    if isADownloadRequest:
-                        if (headers['Content-Type'].startswith('text') or
-                                headers['Content-Type'].find('html') != -1):
-                            raise Exception(
-                                utils_messages.get_external_messages()[
-                                    'motu-client.exception.motu.error'
-                                ] % m.read())
+            if ("Content-Type" in headers and
+                    len(headers['Content-Type']) > 0 and
+                    isADownloadRequest and
+                    (headers['Content-Type'].startswith('text') or
+                     headers['Content-Type'].find('html') != -1):
+                raise Exception(
+                    utils_messages.get_external_messages()[
+                        'motu-client.exception.motu.error'] % m.read())
 
             log.info('File type: %s' % headers['Content-Type'])
             # check if a content length (size of the file) has been send
@@ -678,7 +679,7 @@ def execute_request(_options):
             else:
                 stopWatch.start('wait_request')
                 requestUrl = get_requestUrl(download_url, url_service,
-                                            **url_config)
+                                            _options, **url_config)
 
                 if requestUrl is not None:
                     # asynchronous mode

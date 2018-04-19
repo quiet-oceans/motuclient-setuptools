@@ -1,0 +1,816 @@
+diff --git a/.gitignore b/.gitignore
+index 74be61c..93d4fd3 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,3 +1,5 @@
+ /target/
+ *.pyc
+ *.py-path
++/dist/
++/MANIFEST
+diff --git a/.settings/org.eclipse.core.resources.prefs b/.settings/org.eclipse.core.resources.prefs
+index 333827f..5f210ce 100644
+--- a/.settings/org.eclipse.core.resources.prefs
++++ b/.settings/org.eclipse.core.resources.prefs
+@@ -1,8 +1,11 @@
+ eclipse.preferences.version=1
+-encoding//src/python/lib/motu_api.py=utf-8
+-encoding//src/python/lib/stop_watch.py=utf-8
+-encoding//src/python/lib/utils_cas.py=utf-8
+-encoding//src/python/lib/utils_http.py=utf-8
+-encoding//src/python/lib/utils_log.py=utf-8
+-encoding//src/python/lib/utils_stream.py=utf-8
+ encoding//src/python/motu-client.py=utf-8
++encoding//src/python/motuclient/__init__.py=utf-8
++encoding//src/python/motuclient/motu_api.py=utf-8
++encoding//src/python/motuclient/stop_watch.py=utf-8
++encoding//src/python/motuclient/utils_cas.py=utf-8
++encoding//src/python/motuclient/utils_http.py=utf-8
++encoding//src/python/motuclient/utils_log.py=utf-8
++encoding//src/python/motuclient/utils_messages.py=utf-8
++encoding//src/python/motuclient/utils_stream.py=utf-8
++encoding//src/python/motuclient/utils_unit.py=utf-8
+diff --git a/MANIFEST.in b/MANIFEST.in
+new file mode 100644
+index 0000000..422e987
+--- /dev/null
++++ b/MANIFEST.in
+@@ -0,0 +1,6 @@
++# Author: CLS, smarty@cls.fr
++include LICENSE
++include pom.xml
++include README.md
++include setup.cfg
++include setup.py
+diff --git a/Motu-client-python - CONSOLE - DOWNLOAD - CAS SSO QT.launch b/Motu-client-python - CONSOLE - DOWNLOAD - CAS SSO QT.launch
+index ab32a9b..0af0201 100644
+--- a/Motu-client-python - CONSOLE - DOWNLOAD - CAS SSO QT.launch	
++++ b/Motu-client-python - CONSOLE - DOWNLOAD - CAS SSO QT.launch	
+@@ -8,7 +8,7 @@
+ </listAttribute>
+ <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:motu-client-python/src/python/motu-client.py}"/>
+ <stringAttribute key="org.eclipse.ui.externaltools.ATTR_OTHER_WORKING_DIRECTORY" value=""/>
+-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--quiet --auth-mode=cas -u ${MOTU_USER} -p ${MOTU_PASSWORD}  -m http://misgw-ddo-qt2.cls.fr:9085/motu-web/Motu -s HR_MOD_NCSS-TDS -d HR_MOD -z 0.49 -Z 0.50 -x -70 -X 25 -y -75 -Y 10 -t &quot;2016-06-10&quot; -T &quot;2016-06-11&quot; -v salinity -o console${MOTU_HOME}/motu-client-python -f test.nc"/>
++<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--quiet --auth-mode=cas -u ${MOTU_USER} -p ${MOTU_PASSWORD}  -m http://misgw-ddo.qt.cls.fr:9085/motu-web/Motu -s HR_MOD_NCSS-TDS -d HR_MOD -z 0.49 -Z 0.50 -x -70 -X 25 -y -75 -Y 10 -t &quot;2016-06-10&quot; -T &quot;2016-06-11&quot; -v salinity -o console${MOTU_HOME}/motu-client-python -f test.nc"/>
+ <stringAttribute key="org.python.pydev.debug.ATTR_INTERPRETER" value="__default"/>
+ <stringAttribute key="org.python.pydev.debug.ATTR_PROJECT" value="motu-client-python"/>
+ <stringAttribute key="process_factory_id" value="org.python.pydev.debug.processfactory.PyProcessFactory"/>
+diff --git a/Motu-client-python - CONSOLE - GET SIZE - CAS SSO QT.launch b/Motu-client-python - CONSOLE - GET SIZE - CAS SSO QT.launch
+index 26e1132..5abdee8 100644
+--- a/Motu-client-python - CONSOLE - GET SIZE - CAS SSO QT.launch	
++++ b/Motu-client-python - CONSOLE - GET SIZE - CAS SSO QT.launch	
+@@ -8,7 +8,7 @@
+ </listAttribute>
+ <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:motu-client-python/src/python/motu-client.py}"/>
+ <stringAttribute key="org.eclipse.ui.externaltools.ATTR_OTHER_WORKING_DIRECTORY" value=""/>
+-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--quiet --auth-mode=cas --size --console-mode -u ${MOTU_USER} -p ${MOTU_PASSWORD}  -m http://misgw-ddo-qt2.cls.fr:9085/motu-web/Motu -s HR_MOD_NCSS-TDS -d HR_MOD -z 0.49 -Z 0.50 -x -70 -X 25 -y -75 -Y 10 -t &quot;2016-06-10&quot; -T &quot;2016-06-11&quot; -v salinity"/>
++<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--quiet --auth-mode=cas --size --console-mode -u ${MOTU_USER} -p ${MOTU_PASSWORD}  -m http://misgw-ddo.qt.cls.fr:9085/motu-web/Motu -s HR_MOD_NCSS-TDS -d HR_MOD -z 0.49 -Z 0.50 -x -70 -X 25 -y -75 -Y 10 -t &quot;2016-06-10&quot; -T &quot;2016-06-11&quot; -v salinity"/>
+ <stringAttribute key="org.python.pydev.debug.ATTR_INTERPRETER" value="__default"/>
+ <stringAttribute key="org.python.pydev.debug.ATTR_PROJECT" value="motu-client-python"/>
+ <stringAttribute key="process_factory_id" value="org.python.pydev.debug.processfactory.PyProcessFactory"/>
+diff --git a/NOTICE b/NOTICE
+deleted file mode 100644
+index c3a0559..0000000
+--- a/NOTICE
++++ /dev/null
+@@ -1,51 +0,0 @@
+-Motu Client Python
+-
+-This package holds the python scripts used to address Motu servers for ordering, extracting and
+-        downloading oceanographic data.
+-
+-Copyright CLS (Collecte Localisation Satelite) (http://www.cls.fr)
+-
+-Version History
+-===============
+-1.0.3 - Feb. 2013
+-------------------
+-  - Bugs fixed :
+-    * Connection failed through a proxy (--proxy-server option).
+-
+-===============
+-1.0.6 - May. 2015
+-------------------
+-  - Bugs fixed :
+-    * Connection problem with double-proxy configuration.
+-	
+-  - New feature :
+-    * Asynchronous download mode that waits until the files are processed on motu side.
+-	
+-===============
+-1.0.7 - June. 2015
+-------------------
+-  - New feature :
+-    * Improvement of verbosity/error control with the asynchronous mode.
+-	
+-===============
+-1.0.8 - June. 2015
+-------------------
+-  - Bug correction :
+-    * Avoid SSL negotiation (TLSv1 fixed as default).
+-	* Bug affected latest Ubuntu 12.04 and higher.
+-
+-===============
+-1.1.0 - June. 2016
+-------------------
+-  - MOTU-39: [CIS] Motu-Client python script error with the -D option (describe product)
+-  	* The provided patch has been applied.
+-  - MOTU-58: Script Python: Describe product longitude outside [0-360] are causing errors
+-  	* Method normalize_longitude added in order to adapt the longitude values to the correct interval [-180,180].
+-  - MOTU-62: motu-client script : Processing time displayed not pertinent
+-  	* The start time for process duration is now starting from the beginning of the request
+-  	
+-===============
+-1.2.0 - Sept. 2016
+-------------------
+-  - Add script version as an HTTP parameter while requesting Motu server
+-  - Validate the client to be compatible with Motu server version 3.x
+\ No newline at end of file
+diff --git a/README.md b/README.md
+index aa9d467..de2047a 100644
+--- a/README.md
++++ b/README.md
+@@ -1,8 +1,7 @@
+-# Motu Client Python Project
+-@author Project manager <rdedianous@cls.fr>  
++# Motu Client Python Project 
+ @author Product owner <tjolibois@cls.fr>  
+ @author Scrum master, software architect <smarty@cls.fr>  
+-@author Quality assurance, continuous integration manager <bpirrotta@cls.fr> 
++@author Quality assurance, continuous integration manager <smarty@cls.fr>  
+ 
+ >How to read this file? 
+ Use a markdown reader: 
+@@ -13,20 +12,26 @@ and also plugin for [notepadd++](https://github.com/Edditoria/markdown_npp_zenbu
+ >Be careful: Markdown format has issue while rendering underscore "\_" character which can lead to bad variable name or path.
+ 
+ 
+-#Summary
++# Summary
+ * [Overview](#Overview)
+ * [Build](#Build)
+ * [Installation](#Installation)
++    * [Using PIP](#InstallationPIP)
++    * [From tar.gz file](#InstallationTGZ)
+ * [Configuration](#Configuration)
+ * [Usage and options](#Usage)
++    * [Usage from PIP installation](#UsagePIP)
++    * [Usage from tar.gz installation](#UsageTGZ)
+ * [Usage examples](#UsageExamples)
+     * [Download](#UsageExamplesDownload)
+     * [GetSize](#UsageExamplesGetSize)	
+     * [DescribeProduct](#UsageExamplesDescribeProduct)
+ * [Licence](#Licence)
++* [Troubleshooting](#Troubleshooting)
++    * [Unable to download the latest version watched on GitHub from PIP](#Troubleshooting)  
++    * [From Windows, Parameter error](#TroubleshootingWinArgErr)
+ 
+-
+-#<a name="Overview">Overview</a>
++# <a name="Overview">Overview</a>
+ Motu client "motu-client-python" is a python script used to connect to Motu HTTP server in order to:  
+ 
+ * __extract__ the data of a dataset, with geospatial, temporal and variable criterias (default option)   
+@@ -36,10 +41,11 @@ Motu client "motu-client-python" is a python script used to connect to Motu HTTP
+ This program can be integrated into a processing chain in order to automate the downloading of products via the Motu.  
+   
+   
+-#<a name="Build">Build</a>  
+-From the root folder runs the Maven command:  
++# <a name="Build">Build</a>  
++From the root folder runs the command:  
+   
+ ```
++./patchPOMtoBuild.sh  
+ mvn clean install -Dmaven.test.skip=true
+ [...]
+ [INFO] BUILD SUCCESS
+@@ -53,11 +59,29 @@ This creates two archives in the target folder:
+ 
+ 
+ 
+-#<a name="Installation">Installation</a> 
++# <a name="Installation">Installation</a> 
+ You must use python version 2.7.X or later.  
+ This program is not compatible with Python 3.X versions.  
++There is two methods to install the client, by using PIP or from a tar.gz file.
+   
+-Deploy the archive in the directory of your choice.  
++## <a name="InstallationPIP">Using PIP</a>
++Python Package Index is used to ease installation.  
++If your host needs a PROXY set it, for example:  
++```
++export HTTPS_PROXY=http://myCompanyProxy:8080  
++```  
++
++Then run:  
++  
++```
++pip install motu-client  
++```
++  
++Now "Motu-client" is installed, you can [configured it](#Configuration) and [use it](#UsagePIP).
++  
++  
++## <a name="InstallationTGZ">From tar.gz file</a>
++Deploy the archive (file motu-client-python-$version-bin.tar.gz available from [GitHub release](https://github.com/clstoulouse/motu-client-python/releases)) in the directory of your choice.  
+ ```  
+ tar xvzf motu-client-python-$version-$buildTimestamp-bin.tar.gz
+ ```  
+@@ -65,7 +89,7 @@ tar xvzf motu-client-python-$version-$buildTimestamp-bin.tar.gz
+ Create a [configuration file](#Configuration) and set the user and password to use to connect to the CAS server.   
+ 
+ 
+-#<a name="Configuration">Configuration</a>  
++# <a name="Configuration">Configuration</a>  
+ All parameters can be defined as command line options or can be written in a configuration file.
+ The configuration file is a .ini file. This file is located in the following directory:  
+ 
+@@ -99,15 +123,28 @@ socket_timeout=
+ ``` 
+ 
+ 
+-#<a name="Usage">Usage</a>  
++# <a name="Usage">Usage</a>  
+ Starts the motu python client.  
+ 
++## <a name="UsagePIP">Usage from PIP installation</a>  
++```  
++python -m motu-client -h  
++python -m motu-client [options]
++```  
++  
++[Options](#UsageOptions) are listed below.  
++Method to used when it has been installed with [PIP method](#InstallationPIP).  
++
++
++## <a name="UsageTGZ">Usage from tar.gz installation</a>  
+ ```  
+ ./motu-client.py  -h  
+ motu-client.py [options]
+ ```  
++Method to used when it has been installed with [tar.gz method](#InstallationTGZ).  
++Usefull if host is offline and has no Internet access.
+ 
+-__Options:__  
++### <a name="UsageOptions">__Options:__</a>  
+ 
+ 
+ * __-h, --help__            show this help message and exit  
+@@ -133,8 +170,8 @@ __Options:__
+ * __-m MOTU, --motu=MOTU__ Motu server url, e.g. "-m http://localhost:8080/motu-web/Motu"  
+ * __-s SERVICE_ID, --service-id=SERVICE_ID__ The service identifier (string), e.g. -s Mercator_Ocean_Model_Global-TDS  
+ * __-d PRODUCT_ID, --product-id=PRODUCT_ID__ The product (data set) to download (string), e.g. -d dataset-mercator-psy4v3-gl12-bestestimate-uv  
+-* __-t DATE_MIN, --date-min=DATE_MIN__ The min date with optional hour resolution (string following format YYYY-MM-DD [HH:MM:SS]), e.g. -t "2016-06-10"    
+-* __-T DATE_MAX, --date-max=DATE_MAX__ The max date with optional hour resolution (string following format YYYY-MM-DD  [HH:MM:SS ]), e.g. -T "2016-06-11"  
++* __-t DATE_MIN, --date-min=DATE_MIN__ The min date with optional hour resolution (string following format YYYY-MM-DD [HH:MM:SS]), e.g. -t "2016-06-10" or -t "2016-06-10 12:00:00". Be careful to not forget double quotes around the date.     
++* __-T DATE_MAX, --date-max=DATE_MAX__ The max date with optional hour resolution (string following format YYYY-MM-DD  [HH:MM:SS ]), e.g. -T "2016-06-11" or -T "2016-06-10 12:00:00".  Be careful to not forget double quotes around the date.      
+ * __-y LATITUDE_MIN, --latitude-min=LATITUDE_MIN__ The min latitude (float in the interval  [-90 ; 90 ]), e.g. -y -80.5  
+ * __-Y LATITUDE_MAX, --latitude-max=LATITUDE_MAX__ The max latitude (float in the interval  [-90 ; 90 ]), e.g. -Y 80.5   
+ * __-x LONGITUDE_MIN, --longitude-min=LONGITUDE_MIN__ The min longitude (float in the interval [-180 ; 180 ]), e.g. -x -180      
+@@ -157,11 +194,14 @@ __Options:__
+ * __--socket-timeout=SOCKET_TIMEOUT__ Set a timeout on blocking socket operations (float expressing seconds)  
+ * __--user-agent=USER_AGENT__ Set the identification string (user-agent) for HTTP requests. By default this value is 'Python-urllib/x.x' (where x.x is the version of the python interpreter)  
+   
+-#<a name="UsageExamples">Usage examples</a>   
++  
++# <a name="UsageExamples">Usage examples</a>   
+ In the following examples, variable ${MOTU\_USER} and ${MOTU\_PASSWORD} are user name and user password used to connect to the CAS server for single sign on.  
+-${MOTU\_SERVER\_URL} is the URL on the MOTU HTTP(s) server. For example http://localhost:8080/motu-web/Motu.
++${MOTU\_SERVER\_URL} is the URL on the MOTU HTTP(s) server. For example http://localhost:8080/motu-web/Motu.  
++Commands "./motu-client.py" has to be replaced by "python -m motu-client" if it has been installed with [PIP method](#UsagePIP).  
++
+ 
+-##<a name="UsageExamplesDownload">Download</a>  
++## <a name="UsageExamplesDownload">Download</a>  
+ ### Download and save extracted file on the local machine
+ This command writes the extraction result data in file: /data/test.nc  
+ 
+@@ -176,12 +216,12 @@ The HTTP(s) URL is displayed on stdout. This URL is a direct link to the file wh
+ ./motu-client.py --quiet --auth-mode=cas -u ${MOTU_USER} -p ${MOTU_PASSWORD}  -m ${MOTU_SERVER_URL} -s HR_MOD_NCSS-TDS -d HR_MOD -z 0.49 -Z 0.50 -x -70 -X 25 -y -75 -Y 10 -t "2016-06-10" -T "2016-06-11" -v salinity -o console
+ ``` 
+ 
+-##<a name="UsageExamplesGetSize">GetSize</a>  
++## <a name="UsageExamplesGetSize">GetSize</a>  
+ See [https://github.com/clstoulouse/motu#ClientAPI_GetSize](https://github.com/clstoulouse/motu#ClientAPI_GetSize) for more details about XML result.  
+ 
+ ### Download and save the XML file which contains the size on the local machine
+ ```  
+-./motu-client.py --size --auth-mode=cas -u ${MOTU_USER} -p ${MOTU_PASSWORD}  -m ${MOTU_SERVER_URL} -s HR_MOD_NCSS-TDS -d HR_MOD -z 0.49 -Z 0.50 -x -70 -X 25 -y -75 -Y 10 -t "2016-06-10" -T "2016-06-11" -v salinity -o /data -f size.xml
++./motu-client.py --size --auth-mode=cas -u ${MOTU_USER} -p ${MOTU_PASSWORD}  -m ${MOTU_SERVER_URL} -s HR_MOD_NCSS-TDS -d HR_MOD -z 0.49 -Z 0.50 -x -70 -X 25 -y -75 -Y 10 -t "2016-06-10" -T "2016-06-11" -v salinity -o /data -f getSizeResult.xml
+ ``` 
+ 
+ ### Display the size XML result on stdout
+@@ -190,12 +230,12 @@ See [https://github.com/clstoulouse/motu#ClientAPI_GetSize](https://github.com/c
+ ``` 
+ 
+ 
+-##<a name="UsageExamplesDescribeProduct">DescribeProduct</a>  
++## <a name="UsageExamplesDescribeProduct">DescribeProduct</a>  
+ See [https://github.com/clstoulouse/motu#describe-product](https://github.com/clstoulouse/motu#describe-product) for more details about XML result.  
+ 
+ ### Download and save the XML file which contains the size on the local machine
+ ```  
+-./motu-client.py -D --auth-mode=cas -u ${MOTU_USER} -p ${MOTU_PASSWORD}  -m ${MOTU_SERVER_URL} -s HR_MOD_NCSS-TDS -d HR_MOD -z 0.49 -Z 0.50 -x -70 -X 25 -y -75 -Y 10 -t "2016-06-10" -T "2016-06-11" -v salinity -o /data -f size.xml
++./motu-client.py -D --auth-mode=cas -u ${MOTU_USER} -p ${MOTU_PASSWORD}  -m ${MOTU_SERVER_URL} -s HR_MOD_NCSS-TDS -d HR_MOD -z 0.49 -Z 0.50 -x -70 -X 25 -y -75 -Y 10 -t "2016-06-10" -T "2016-06-11" -v salinity -o /data -f describeProductResult.xml
+ ``` 
+ 
+ ### Display the size XML result on stdout
+@@ -206,9 +246,46 @@ See [https://github.com/clstoulouse/motu#describe-product](https://github.com/cl
+ 
+ 
+ 
+-#<a name="Licence">Licence</a> 
++# <a name="Licence">Licence</a> 
+ This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.  
+   
+ This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.  
+   
+ You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.  
++
++# <a name="Troubleshooting">Troubleshooting</a>  
++# <a name="TroubleshootingPIPCache">Unable to download the latest version watched on GitHub from PIP</a>
++Example:  
++```  
++pip install motu-client  
++Collecting motu-client  
++  Using cached https://test-files.pythonhosted.org/packages/4a/7d/41c3bdd973baf119371493c193248349c9b7107477ebf343f3889cabbf48/motu-client-X.Y.Z.zip  
++Installing collected packages: motu-client  
++  Running setup.py install for motu-client ... done  
++Successfully installed motu-client-X.Y.Z  
++```  
++  
++Clear your PIP cache: On Windows, delete the folder %HOMEPATH%/pip. On archlinux pip cache is located at ~/.cache/pip.
++After re run the command:  
++```  
++pip install motu-client  
++Collecting motu-client  
++  Using https://test-files.pythonhosted.org/packages/4a/7d/41c3bdd973baf119371493c193248349c9b7107477ebf343f3889cabbf48/motu-client-X.Y.Z.zip  
++Installing collected packages: motu-client  
++  Running setup.py install for motu-client ... done  
++Successfully installed motu-client-X.Y.Z  
++``` 
++
++# <a name="TroubleshootingWinArgErr">From Windows, Parameter error</a>
++From Windows, the command "motu-client.py --version" returns an error.  
++10:44:24 [ERROR] Execution failed: [Excp 13] User (option 'user') is mandatory when 'cas' authentication is set. Please provide it.
++
++__Analyse:__  
++This issue comes from the fact that Windows command line does not pass parameters to python command.  
++  
++__Solution:__  
++``` 
++Edit the Windows Registry Key "HKEY_CLASSES_ROOT\py_auto_file\shell\open\command" and append at the end of the value %*  
++Exemple: "C:\dvltSoftware\python\Python27\python.exe" "%1" %*  
++``` 
++
+diff --git a/assembly/bin.xml b/assembly/bin.xml
+index 65fbae6..c200c33 100644
+--- a/assembly/bin.xml
++++ b/assembly/bin.xml
+@@ -29,33 +29,52 @@
+             <excludes>
+ 				<!-- excludeany compiled source -->
+ 				<exclude>**/*.pyc</exclude>
+-                                <exclude>**/*.formatted</exclude>
++                <exclude>**/*.formatted</exclude>
+ 			</excludes>	
+ 		</fileSet>
+-		<fileSet>
+-			<directory>src/doc</directory>
+-			<outputDirectory>/doc</outputDirectory>
+-			<excludes>
+-				<!-- exclude the source of the doc (included only in the source assembly) -->
+-				<exclude>*.t2t</exclude>
+-			</excludes>	
+-			<!-- rwx rwx r-x -->
+-			<fileMode>0664</fileMode>
+-			<directoryMode>0775</directoryMode>
+-		</fileSet>
+ 	</fileSets>
+ 	<files>
+ 		<file>
+-			<source>NOTICE</source>
++			<source>LICENSE</source>
+ 			<outputDirectory>/</outputDirectory>
+ 			<fileMode>0664</fileMode>
+-			<filtered>true</filtered>
++			<filtered>false</filtered>
+ 		</file>
+ 		<file>
+-			<source>LICENSE</source>
++			<source>MANIFEST.in</source>
++			<outputDirectory>/</outputDirectory>
++			<fileMode>0664</fileMode>
++			<filtered>false</filtered>
++		</file>
++		<file>
++			<source>README.md</source>
++			<outputDirectory>/</outputDirectory>
++			<fileMode>0664</fileMode>
++			<filtered>false</filtered>
++		</file>
++		<file>
++			<source>pom.xml</source>
+ 			<outputDirectory>/</outputDirectory>
+ 			<fileMode>0664</fileMode>
+ 			<filtered>false</filtered>
+ 		</file>
++		<file>
++			<source>setup.cfg</source>
++			<outputDirectory>/</outputDirectory>
++			<fileMode>0664</fileMode>
++			<filtered>false</filtered>
++		</file>
++		<file>
++			<source>setup.py</source>
++			<outputDirectory>/</outputDirectory>
++			<fileMode>0664</fileMode>
++			<filtered>false</filtered>
++		</file>
++		<file>
++			<source>patchPOMtoBuild.sh</source>
++			<outputDirectory>/</outputDirectory>
++			<fileMode>0774</fileMode>
++			<filtered>false</filtered>
++		</file>
+ 	</files>
+ </assembly>
+diff --git a/patchPOMtoBuild.sh b/patchPOMtoBuild.sh
+new file mode 100644
+index 0000000..45042fb
+--- /dev/null
++++ b/patchPOMtoBuild.sh
+@@ -0,0 +1,9 @@
++#!/bin/sh
++# Script used to build when project is cloned from on GitHub
++#Test to comment only once
++stringParent=`head -n 2 pom.xml | tail -n 1`
++if [[ "$stringParent" != *"--"* ]]; then
++    echo "INFO: Comment in pom.xml the parent tag because it is only usable in CLS premise for CLS specific tasks, but not necessary at all on GitHub to build the project."
++    sed -i "1,/<parent/ s/<parent/<\!-- <parent/; 1,/<\/parent>/ s/<\/parent>/<\/parent> -->/;" pom.xml
++    echo "INFO: Done."
++fi
+diff --git a/pom.xml b/pom.xml
+index ef32ea8..22fde23 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -7,7 +7,7 @@
+ 	<modelVersion>4.0.0</modelVersion>
+     <groupId>cls.atoll.motu.client</groupId>
+     <artifactId>motu-client-python</artifactId>
+-    <version>1.4.00</version>
++    <version>1.5.00</version>
+     <packaging>pom</packaging>
+ 
+     <name>Motu Client Python</name>
+@@ -247,6 +247,5 @@
+             <timezone>+1</timezone>
+             <properties />
+         </contributor>
+-    </contributors>
+-
++    </contributors>
+ </project>
+\ No newline at end of file
+diff --git a/setup.cfg b/setup.cfg
+new file mode 100644
+index 0000000..224a779
+--- /dev/null
++++ b/setup.cfg
+@@ -0,0 +1,2 @@
++[metadata]
++description-file = README.md
+\ No newline at end of file
+diff --git a/setup.py b/setup.py
+new file mode 100644
+index 0000000..80a8477
+--- /dev/null
++++ b/setup.py
+@@ -0,0 +1,50 @@
++from distutils.core import setup
++from os.path import splitext, basename, dirname, abspath
++import glob, os, sys
++
++# project libraries path
++LIBRARIES_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src', 'python')
++print LIBRARIES_PATH
++# Manage imports of project libraries
++if not os.path.exists(LIBRARIES_PATH):
++    sys.stderr.write('\nERROR: can not find project libraries path: %s\n\n' % os.path.abspath(LIBRARIES_PATH))
++    sys.exit(1) 
++sys.path.append(LIBRARIES_PATH)  
++
++
++from motuclient import pom_version
++
++setup(
++  name = 'motu-client',
++  version = pom_version.getPOMVersion(),
++  python_requires='>=2.7, <3',
++  description = 'Extract and download gridded data through a python command line from Motu web server. Used in CMEMS context http://marine.copernicus.eu/',
++  long_description = 'Motu is a high efficient and robust Web Server which fills the gap between heterogeneous data providers to end users. Motu handles, extracts and transforms oceanographic huge volumes of data without performance collapse. This client enables to extract and download data through a python command line.',
++  keywords = ['Copernicus', 'CMEMS', 'CLS', 'Motu', 'motu-client-python', 'Dissemination Unit'],
++  
++  author = 'Sylvain MARTY, CLS',
++  author_email = 'smarty@cls.fr',
++  platforms=['any'],
++  
++  url = 'https://github.com/clstoulouse/motu-client-python',
++  license='LGPL',
++  
++  package_dir = {'': 'src/python'},
++  packages=['', 'motuclient'],
++  include_package_data = True,
++  package_data={'motuclient/cfg': ['src/python/motuclient/cfg/log.ini',
++                                    'src/python/motuclient/cfg/messages.properties']},
++  data_files=[('motu-client/cfg', [ 'src/python/motuclient/cfg/log.ini',
++                        'src/python/motuclient/cfg/messages.properties'])],
++  
++  download_url = 'https://github.com/clstoulouse/motu-client-python/releases/download/motu-client-python-1.4.00/motu-client-python-1.4.00-20170410143941999-bin.tar.gz', # https://github.com/clstoulouse/motu-client-python/archive/motu-client-python-1.4.00.tar.gz
++  
++  classifiers = ['Development Status :: 5 - Production/Stable',
++                 'Programming Language :: Python :: 2.7',
++                 'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',
++                 'Topic :: Scientific/Engineering :: GIS',
++                 'Environment :: Console',
++                 'Natural Language :: English',
++                 'Operating System :: OS Independent',
++          ]
++)
+\ No newline at end of file
+diff --git a/src/python/etc/productMetadataInfo2txt.xsl b/src/python/etc/productMetadataInfo2txt.xsl
+deleted file mode 100644
+index 26471bb..0000000
+--- a/src/python/etc/productMetadataInfo2txt.xsl
++++ /dev/null
+@@ -1,41 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+-<xsl:output method="text" encoding="UTF-8" omit-xml-declaration="yes"/>
+-  <xsl:template match="productMetadataInfo">
+-      <xsl:choose>
+-          <xsl:when test="@code = '0'">
+-                    <xsl:apply-templates/>
+-          </xsl:when>
+-          <xsl:otherwise>
+-Unable to retrieve product description. Error is:
+-<xsl:value-of select="@msg"/>
+-          </xsl:otherwise>
+-      </xsl:choose>
+-  </xsl:template>
+-  <xsl:template match="timeCoverage">
+-- Time coverage:
+-  . begin: <xsl:value-of select="@start"/>
+-  . end:<xsl:value-of select="@end"/>      
+-  </xsl:template>
+-
+-  <xsl:template match="geospatialCoverage">
+-- Depth range (in <xsl:value-of select="@depthUnits"/>):
+-  . min: <xsl:value-of select="@depthMin"/>
+-  . max:<xsl:value-of select="@depthMax"/>      
+-  </xsl:template>
+-
+- <xsl:template match="dataGeospatialCoverage">
+-- Geographic coverage:
+-  . longitude: [<xsl:value-of select="axis[@name='longitude']/@lower"/>, <xsl:value-of select="axis[@name='longitude']/@upper"/>]
+-  . latitude: [<xsl:value-of select="axis[@name='latitude']/@lower"/>, <xsl:value-of select="axis[@name='latitude']/@upper"/>]
+- </xsl:template>
+-
+-<xsl:template match="variables">
+-- Variables:<xsl:for-each select="variable">
+-  . <xsl:value-of select="@standardName"/>: <xsl:value-of select="@description"/> 
+-</xsl:for-each>
+-</xsl:template>    
+-   <xsl:template match="text()">    
+-   </xsl:template>
+-
+-</xsl:stylesheet>
+diff --git a/src/python/motu-client.py b/src/python/motu-client.py
+index a49a87e..ff17055 100644
+--- a/src/python/motu-client.py
++++ b/src/python/motu-client.py
+@@ -52,10 +52,7 @@ ERROR_CODE_EXIT=1
+ 
+ # the config file to load from 
+ CFG_FILE = '~/motu-client/motu-client-python.ini'
+-LOG_CFG_FILE = './etc/log.ini'
+-
+-# project libraries path
+-LIBRARIES_PATH = os.path.join(os.path.dirname(__file__), './lib')
++LOG_CFG_FILE = './motuclient/cfg/log.ini'
+ 
+ SECTION = 'Main'
+ 
+@@ -65,6 +62,8 @@ log = None
+ # shared variables to download
+ _variables = []
+ 
++# project libraries path
++LIBRARIES_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'motuclient')
+ # Manage imports of project libraries
+ if not os.path.exists(LIBRARIES_PATH):
+     sys.stderr.write('\nERROR: can not find project libraries path: %s\n\n' % os.path.abspath(LIBRARIES_PATH))
+diff --git a/src/python/motuclient/__init__.py b/src/python/motuclient/__init__.py
+new file mode 100644
+index 0000000..e69de29
+diff --git a/src/python/etc/log.ini b/src/python/motuclient/cfg/log.ini
+similarity index 100%
+rename from src/python/etc/log.ini
+rename to src/python/motuclient/cfg/log.ini
+diff --git a/src/python/etc/messages.properties b/src/python/motuclient/cfg/messages.properties
+similarity index 100%
+rename from src/python/etc/messages.properties
+rename to src/python/motuclient/cfg/messages.properties
+diff --git a/src/python/lib/motu_api.py b/src/python/motuclient/motu_api.py
+similarity index 97%
+rename from src/python/lib/motu_api.py
+rename to src/python/motuclient/motu_api.py
+index 8a539e4..53fdadf 100644
+--- a/src/python/lib/motu_api.py
++++ b/src/python/motuclient/motu_api.py
+@@ -34,6 +34,7 @@ import datetime
+ import time
+ import socket
+ from xml.dom import minidom
++from pkg_resources import get_distribution
+ 
+ # Import project libraries
+ import utils_log
+@@ -63,7 +64,13 @@ def get_client_version():
+     
+     The value is automatically set by the maven processing build, so don't 
+     touch it unless you know what you are doing."""
+-    return '${project.version}-${build-timestamp}'
++    version = 'unknown'
++    try:
++        version = get_distribution('motu-client').version    
++    except:
++        from motuclient import pom_version
++        version = pom_version.getPOMVersion()
++    return version
+ 
+ def get_client_artefact():
+     """Return the artifact identifier (as a string) of this client.
+@@ -309,7 +316,7 @@ def get_url_config(_options, data = None):
+     
+     return kargs
+ 
+-def get_requestUrl(dl_url, server, **options):
++def get_requestUrl(dl_url, server, _options, **options):
+     """ Get the request url."""    
+     stopWatch = stop_watch.localThreadStopWatch()    
+     start_time = datetime.datetime.now()
+@@ -329,7 +336,7 @@ def get_requestUrl(dl_url, server, **options):
+     else:
+         requestId = node.getAttribute('requestId')
+         # Get request url
+-        get_req_url = server + '?action=getreqstatus&requestid=' + requestId
++        get_req_url = server + '?action=getreqstatus&requestid=' + requestId + "&service=" + _options.service_id + "&product=" + _options.product_id
+         
+     stopWatch.stop('get_request')
+     
+@@ -373,11 +380,8 @@ def dl_2_file(dl_url, fh, block_size = 65535, isADownloadRequest = None, **optio
+ 
+             # check that content type is not text/plain
+             headers = m.info()
+-            if "Content-Type" in headers:
+-              if len(headers['Content-Type']) > 0:
+-                if isADownloadRequest:
+-                  if headers['Content-Type'].startswith('text') or headers['Content-Type'].find('html') != -1:
+-                    raise Exception( utils_messages.get_external_messages()['motu-client.exception.motu.error'] % m.read() )
++            if "Content-Type" in headers and len(headers['Content-Type']) > 0 and isADownloadRequest and (headers['Content-Type'].startswith('text') or headers['Content-Type'].find('html') != -1):
++                raise Exception( utils_messages.get_external_messages()['motu-client.exception.motu.error'] % m.read() )
+               
+             log.info( 'File type: %s' % headers['Content-Type'] )
+             # check if a content length (size of the file) has been send
+@@ -569,7 +573,7 @@ def execute_request(_options):
+             # Asynchronous mode
+             else:
+                 stopWatch.start('wait_request')
+-                requestUrl = get_requestUrl(download_url, url_service, **url_config)    
++                requestUrl = get_requestUrl(download_url, url_service, _options, **url_config)    
+                 
+                 if requestUrl != None:    
+                     # asynchronous mode
+@@ -589,6 +593,7 @@ def execute_request(_options):
+                             # if none, we do nothing more, in basic, we let the url requester doing the job
+                             requestUrlCas = requestUrl    
+                         
++                        
+                         m = utils_http.open_url(requestUrlCas, **url_config)                
+                         motu_reply=m.read()
+                         dom = minidom.parseString(motu_reply)
+@@ -625,4 +630,4 @@ def execute_request(_options):
+                 pass
+             raise
+     finally:
+-        stopWatch.stop()
++        stopWatch.stop()
+\ No newline at end of file
+diff --git a/src/python/motuclient/pom_version.py b/src/python/motuclient/pom_version.py
+new file mode 100644
+index 0000000..ec54219
+--- /dev/null
++++ b/src/python/motuclient/pom_version.py
+@@ -0,0 +1,25 @@
++from xml.etree import ElementTree
++import os
++
++def getPOMVersion():
++    version="Unknown"
++    try:
++        # For production tree, while run from cur folder
++        abspath = os.path.abspath(__file__)
++        dname = os.path.dirname(abspath)
++        print "dname=" + dname
++        version = __getPOMVersion(os.path.join(dname, "..", "pom.xml") )
++    except:
++        # For development tree
++        try:
++            version = __getPOMVersion(os.path.join(dname, "..", "..", "pom.xml") )
++        except:
++            version = __getPOMVersion(os.path.join(dname, "..", "..", "..", "pom.xml") )
++    return version
++    
++def __getPOMVersion(POM_FILE):
++    namespaces = {'xmlns' : 'http://maven.apache.org/POM/4.0.0'}
++    tree = ElementTree.parse(POM_FILE)
++    root = tree.getroot()
++    version = root.find("xmlns:version", namespaces=namespaces)
++    return str(version.text)
+diff --git a/src/python/lib/stop_watch.py b/src/python/motuclient/stop_watch.py
+similarity index 100%
+rename from src/python/lib/stop_watch.py
+rename to src/python/motuclient/stop_watch.py
+diff --git a/src/python/lib/utils_cas.py b/src/python/motuclient/utils_cas.py
+similarity index 88%
+rename from src/python/lib/utils_cas.py
+rename to src/python/motuclient/utils_cas.py
+index e9710c6..3b2a0b0 100644
+--- a/src/python/lib/utils_cas.py
++++ b/src/python/motuclient/utils_cas.py
+@@ -87,8 +87,21 @@ def authenticate_CAS_for_URL(url, user, pwd, **url_config):
+ 
+     utils_log.log_url( log, "login user into CAS:\t", url_cas+'?'+opts )
+     url_config['data']=opts
+-    connexion = utils_http.open_url(url_cas, **url_config)
+-
++    try:
++        connexion = utils_http.open_url(url_cas, **url_config)
++    except Exception as e:
++        if e.code == 400:
++            log.error( """Error: Bad user login or password:
++            
++                 On *nix OS, you must use the single quote, otherwise it may expand specific characters.
++                 [...] -u 'string' or --user 'string' [...]
++                 
++                 On Windows OS, you must use the double quote, because single quotes are treated literally.
++                 [...] -p "string" or --pwd "string" [...]
++                 """);
++        
++        raise e
++        
+     fp = utils_html.FounderParser()
+     for line in connexion:
+         log.log( utils_log.TRACE_LEVEL, 'utils_html.FounderParser() line: %s', line )
+diff --git a/src/python/lib/utils_collection.py b/src/python/motuclient/utils_collection.py
+similarity index 100%
+rename from src/python/lib/utils_collection.py
+rename to src/python/motuclient/utils_collection.py
+diff --git a/src/python/lib/utils_html.py b/src/python/motuclient/utils_html.py
+similarity index 100%
+rename from src/python/lib/utils_html.py
+rename to src/python/motuclient/utils_html.py
+diff --git a/src/python/lib/utils_http.py b/src/python/motuclient/utils_http.py
+similarity index 100%
+rename from src/python/lib/utils_http.py
+rename to src/python/motuclient/utils_http.py
+diff --git a/src/python/lib/utils_log.py b/src/python/motuclient/utils_log.py
+similarity index 100%
+rename from src/python/lib/utils_log.py
+rename to src/python/motuclient/utils_log.py
+diff --git a/src/python/lib/utils_messages.py b/src/python/motuclient/utils_messages.py
+similarity index 97%
+rename from src/python/lib/utils_messages.py
+rename to src/python/motuclient/utils_messages.py
+index 8b988b0..a4821e0 100644
+--- a/src/python/lib/utils_messages.py
++++ b/src/python/motuclient/utils_messages.py
+@@ -30,7 +30,7 @@ import os
+ 
+ _messages = None
+ 
+-MESSAGES_FILE = '../etc/messages.properties'
++MESSAGES_FILE = 'cfg/messages.properties'
+ 
+ def get_external_messages():
+     """Return a table of externalized messages.
+diff --git a/src/python/lib/utils_stream.py b/src/python/motuclient/utils_stream.py
+similarity index 100%
+rename from src/python/lib/utils_stream.py
+rename to src/python/motuclient/utils_stream.py
+diff --git a/src/python/lib/utils_unit.py b/src/python/motuclient/utils_unit.py
+similarity index 100%
+rename from src/python/lib/utils_unit.py
+rename to src/python/motuclient/utils_unit.py
