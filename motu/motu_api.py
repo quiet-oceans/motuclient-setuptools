@@ -454,7 +454,7 @@ def dl_2_file(dl_url, fh, block_size=65535, isADownloadRequest=None,
                     len(headers['Content-Type']) > 0 and
                     isADownloadRequest and
                     (headers['Content-Type'].startswith('text') or
-                     headers['Content-Type'].find('html') != -1):
+                     headers['Content-Type'].find('html') != -1)):
                 raise Exception(
                     utils_messages.get_external_messages()[
                         'motu-client.exception.motu.error'] % m.read())
